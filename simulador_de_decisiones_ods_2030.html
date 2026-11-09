@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Alcalde 2030: Simulador de Decisiones ODS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nature: {
+                            50: '#fbfbf7',
+                            100: '#f4f6ef',
+                            200: '#e7ecdf',
+                            300: '#d1dcbf',
+                            400: '#a3ba87',
+                            500: '#759957',
+                            600: '#4a6b35',
+                            700: '#344e26',
+                            800: '#23341a',
+                            900: '#142110',
+                            950: '#0a1208',
+                        },
+                        earth: {
+                            50: '#faf8f5',
+                            100: '#f2ede4',
+                            200: '#e5dbcc',
+                            300: '#ceb99e',
+                            400: '#ba9a74',
+                            500: '#9e7953',
+                            600: '#7e5c3c',
+                            700: '#644730',
+                            800: '#523a29',
+                            900: '#443123',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Fraunces', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts: Plus Jakarta Sans + Fraunces -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-bg-base: #f7f6f0;
+            --color-canvas: #faf9f5;
+            --color-text-main: #202c1f;
+            --color-text-muted: #5e6d5b;
+            --color-border: #e3dec3;
+        }
+
+        .dark {
+            --color-bg-base: #111a14;
+            --color-canvas: #16221b;
+            --color-text-main: #eff5ee;
+            --color-text-muted: #95a894;
+            --color-border: #2c3e32;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--color-bg-base);
+            color: var(--color-text-main);
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Fondo orgánico con textura y contornos topográficos sutiles */
+        .organic-background {
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(117, 153, 87, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(194, 94, 62, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.06) 0%, transparent 60%);
+        }
+
+        .dark .organic-background {
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(74, 107, 53, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(162, 75, 45, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(30, 48, 36, 0.4) 0%, transparent 70%);
+        }
+
+        /* Contenedor y perspectiva del mazo de cartas */
+        .card-container {
+            perspective: 1200px;
+        }
+
+        .decision-card {
+            transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease, box-shadow 0.3s ease;
+            transform-origin: 50% 115%;
+            touch-action: pan-y;
+            will-change: transform;
+        }
+
+        .decision-card.dragging {
+            transition: none;
+            cursor: grabbing;
+        }
+
+        .swipe-left {
+            transform: translateX(-160%) rotate(-25deg) !important;
+            opacity: 0 !important;
+        }
+
+        .swipe-right {
+            transform: translateX(160%) rotate(25deg) !important;
+            opacity: 0 !important;
+        }
+
+        .swipe-up {
+            transform: translateY(-160%) scale(0.85) !important;
+            opacity: 0 !important;
+        }
+
+        /* Sellos dinámicos de voto (Estilo documento oficial con tinta artesanal) */
+        .stamp-badge {
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            transform: rotate(-10deg) scale(0.9);
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.2);
+        }
+        .stamp-badge-right {
+            transform: rotate(10deg) scale(0.9);
+        }
+        .stamp-badge-up {
+            transform: rotate(0deg) scale(0.9);
+        }
+
+        /* Indicadores de impacto sobre los pilares */
+        .impact-dot {
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, background-color 0.2s ease;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .impact-dot.active-small {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .impact-dot.active-large {
+            transform: scale(1.35);
+            opacity: 1;
+        }
+
+        .stat-bar-fill {
+            transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease;
+        }
+
+        /* Rueda oficial de colores ODS */
+        .sdg-wheel {
+            background: conic-gradient(
+                #e5243b 0deg 21deg,
+                #dda63a 21deg 42deg,
+                #4c9f38 42deg 63deg,
+                #c5192d 63deg 84deg,
+                #ff3a21 84deg 105deg,
+                #26bde2 105deg 126deg,
+                #fcc30b 126deg 147deg,
+                #a21942 147deg 168deg,
+                #fd6925 168deg 189deg,
+                #dd1367 189deg 210deg,
+                #fd9d24 210deg 231deg,
+                #bf8b2e 231deg 252deg,
+                #3f7e44 252deg 273deg,
+                #0a97d9 273deg 294deg,
+                #56c02b 294deg 315deg,
+                #00689d 315deg 336deg,
+                #19486a 336deg 360deg
+            );
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .danger-pulse {
+            animation: pulse-soft 1s infinite ease-in-out;
+        }
+
+        /* Scrollbar suave para modales y paneles */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.25);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="organic-background min-h-screen lg:h-screen lg:overflow-hidden flex flex-col justify-between items-center p-2 sm:p-4 lg:p-6 text-stone-800 dark:text-stone-100 transition-colors duration-300">
+
+    <!-- CONTENEDOR GENERAL RESPONSIVO (SE ADAPTA A MÓVIL Y PANTALLA ANCHA DE PC) -->
+    <div class="w-full max-w-7xl mx-auto flex-1 flex flex-col justify-between items-center h-full">
+
+        <!-- CABECERA PRINCIPAL RESPONSIVA: LOGO, FECHA, CONTROLES BIOFÍLICOS -->
+        <header class="w-full flex items-center justify-between py-2 sm:py-2.5 px-3 sm:px-5 bg-white/85 dark:bg-stone-900/85 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-stone-200/90 dark:border-stone-800/80 shadow-md shadow-stone-900/5 transition-all mb-2 lg:mb-3">
+            
+            <!-- Identidad Visual de la Alcaldía Sostenible -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl sdg-wheel p-1 flex items-center justify-center shadow-md flex-shrink-0">
+                    <div class="w-full h-full bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-seedling text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="font-serif font-extrabold text-xs sm:text-base leading-tight tracking-tight text-stone-900 dark:text-stone-50">ALCALDÍA 2030</h1>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            3 VÍAS
+                        </span>
+                    </div>
+                    <p class="text-[9px] sm:text-[11px] text-stone-500 dark:text-stone-400 font-medium hidden sm:block">Simulador de Decisiones Estratégicas y Agenda 2030</p>
+                </div>
+            </div>
+
+            <!-- Controles: Fecha, Bitácora, Asesor, Sonido, Tema y Ayuda -->
+            <div class="flex items-center gap-1 sm:gap-2">
+                <!-- Fecha Actual -->
+                <div class="text-right px-2 sm:px-3 py-1 rounded-xl bg-stone-100/90 dark:bg-stone-800/90 border border-stone-200/60 dark:border-stone-700/60">
+                    <span class="text-[8px] sm:text-[9px] uppercase tracking-wider text-stone-400 dark:text-stone-400 block font-bold">Mandato</span>
+                    <span id="date-display" class="font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-400">Ene 2026</span>
+                </div>
+
+                <!-- Botón Bitácora de Gestión -->
+                <button id="log-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center justify-center text-stone-600 dark:text-stone-300 transition shadow-sm" title="Bitácora de Decisiones" aria-label="Abrir bitácora de decisiones">
+                    <i class="fa-solid fa-book-bookmark text-xs sm:text-sm"></i>
+                </button>
+
+                <!-- Botón Modo Asesor ODS (Pistas visuales +/-) -->
+                <button id="advisor-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center justify-center text-stone-600 dark:text-stone-300 transition shadow-sm" title="Modo Asesor (Muestra pistas de impacto)" aria-label="Activar o desactivar modo asesor">
+                    <i class="fa-regular fa-lightbulb text-xs sm:text-sm text-amber-500"></i>
+                </button>
+
+                <!-- Botón Audio Procedural -->
+                <button id="audio-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center justify-center text-stone-600 dark:text-stone-300 transition shadow-sm" title="Activar/Silenciar efectos sonoros naturales" aria-label="Alternar sonido">
+                    <i id="audio-icon" class="fa-solid fa-volume-high text-xs sm:text-sm text-stone-600 dark:text-stone-300"></i>
+                </button>
+
+                <!-- Botón Cambio de Tema (Luz Natural / Bosque Profundo) -->
+                <button id="theme-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center justify-center text-stone-600 dark:text-stone-300 transition shadow-sm" title="Alternar entre Luz Natural y Bosque Profundo" aria-label="Cambiar tema de color">
+                    <i id="theme-icon" class="fa-solid fa-moon text-xs sm:text-sm"></i>
+                </button>
+
+                <!-- Botón de Ayuda / Reglas -->
+                <button id="help-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-sm" title="Instrucciones del simulador" aria-label="Abrir ayuda e instrucciones">
+                    <i class="fa-solid fa-circle-question text-xs sm:text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ÁREA PRINCIPAL: DASHBOARD ADAPTABLE (1 COLUMNA EN MÓVIL, 3 PANELES EN PC) -->
+        <div class="w-full flex-1 flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 items-center lg:items-center justify-center my-auto">
+
+            <!-- PANEL IZQUIERDO (COLUMNA 1-3 EN PC / BARRA SUPERIOR EN MÓVIL) -->
+            <aside class="w-full max-w-md lg:max-w-none lg:col-span-3 xl:col-span-3 flex flex-col gap-2 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-stone-200/90 dark:border-stone-800/80 shadow-lg shadow-stone-900/5 transition-all mb-2 lg:mb-0">
+                
+                <!-- Título del Panel (Solo visible en PC) -->
+                <div class="hidden lg:flex items-center justify-between pb-2 border-b border-stone-200 dark:border-stone-800">
+                    <span class="text-xs font-serif font-extrabold text-stone-800 dark:text-stone-100 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-pie text-emerald-600"></i> Pilares de la Ciudad
+                    </span>
+                    <span id="desktop-avg-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                        Equilibrio: <strong id="desktop-avg-val">50%</strong>
+                    </span>
+                </div>
+
+                <!-- Los 4 Pilares: Horizontal en móvil (grid-cols-4), vertical detallado en PC (lg:grid-cols-1) -->
+                <div class="grid grid-cols-4 lg:grid-cols-1 gap-2 sm:gap-3 lg:gap-2">
+                    
+                    <!-- Pilar 1: Economía (Ocre Trigo) -->
+                    <div class="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-1.5 lg:p-2 rounded-2xl bg-stone-50/70 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 group">
+                        <div class="h-3 sm:h-4 flex items-center justify-center mb-0.5 lg:mb-0 lg:order-3">
+                            <div id="dot-economy" class="impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(217,119,6,0.6)] flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white"></div>
+                        </div>
+                        <div id="stat-box-economy" class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 overflow-hidden border border-stone-200 dark:border-stone-700 flex items-center justify-center shadow-inner transition-all flex-shrink-0">
+                            <div id="bar-economy" class="stat-bar-fill absolute bottom-0 left-0 w-full bg-gradient-to-t from-amber-600 to-amber-400" style="height: 50%;"></div>
+                            <i class="fa-solid fa-wheat-awn relative z-10 text-base text-stone-800 dark:text-white drop-shadow-sm group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col items-center lg:items-start lg:flex-1 lg:ml-2.5">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-stone-700 dark:text-stone-300">Economía</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="val-economy" class="text-[9px] sm:text-xs font-extrabold text-amber-700 dark:text-amber-400">50%</span>
+                                <span id="status-economy" class="text-[10px] text-stone-400 hidden lg:inline">• Estable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 2: Sociedad (Terracota y Calidez Humana) -->
+                    <div class="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-1.5 lg:p-2 rounded-2xl bg-stone-50/70 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 group">
+                        <div class="h-3 sm:h-4 flex items-center justify-center mb-0.5 lg:mb-0 lg:order-3">
+                            <div id="dot-society" class="impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white"></div>
+                        </div>
+                        <div id="stat-box-society" class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 overflow-hidden border border-stone-200 dark:border-stone-700 flex items-center justify-center shadow-inner transition-all flex-shrink-0">
+                            <div id="bar-society" class="stat-bar-fill absolute bottom-0 left-0 w-full bg-gradient-to-t from-rose-600 to-rose-400" style="height: 50%;"></div>
+                            <i class="fa-solid fa-users relative z-10 text-base text-stone-800 dark:text-white drop-shadow-sm group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col items-center lg:items-start lg:flex-1 lg:ml-2.5">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-stone-700 dark:text-stone-300">Sociedad</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="val-society" class="text-[9px] sm:text-xs font-extrabold text-rose-700 dark:text-rose-400">50%</span>
+                                <span id="status-society" class="text-[10px] text-stone-400 hidden lg:inline">• Estable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 3: Medio Ambiente (Verde Bosque y Flora) -->
+                    <div class="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-1.5 lg:p-2 rounded-2xl bg-stone-50/70 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 group">
+                        <div class="h-3 sm:h-4 flex items-center justify-center mb-0.5 lg:mb-0 lg:order-3">
+                            <div id="dot-environment" class="impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white"></div>
+                        </div>
+                        <div id="stat-box-environment" class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 overflow-hidden border border-stone-200 dark:border-stone-700 flex items-center justify-center shadow-inner transition-all flex-shrink-0">
+                            <div id="bar-environment" class="stat-bar-fill absolute bottom-0 left-0 w-full bg-gradient-to-t from-emerald-600 to-emerald-400" style="height: 50%;"></div>
+                            <i class="fa-solid fa-leaf relative z-10 text-base text-stone-800 dark:text-white drop-shadow-sm group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col items-center lg:items-start lg:flex-1 lg:ml-2.5">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-stone-700 dark:text-stone-300">Ambiente</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="val-environment" class="text-[9px] sm:text-xs font-extrabold text-emerald-700 dark:text-emerald-400">50%</span>
+                                <span id="status-environment" class="text-[10px] text-stone-400 hidden lg:inline">• Estable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 4: Presupuesto (Azul Río Transparente) -->
+                    <div class="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-1.5 lg:p-2 rounded-2xl bg-stone-50/70 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 group">
+                        <div class="h-3 sm:h-4 flex items-center justify-center mb-0.5 lg:mb-0 lg:order-3">
+                            <div id="dot-budget" class="impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)] flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white"></div>
+                        </div>
+                        <div id="stat-box-budget" class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 overflow-hidden border border-stone-200 dark:border-stone-700 flex items-center justify-center shadow-inner transition-all flex-shrink-0">
+                            <div id="bar-budget" class="stat-bar-fill absolute bottom-0 left-0 w-full bg-gradient-to-t from-sky-600 to-sky-400" style="height: 50%;"></div>
+                            <i class="fa-solid fa-coins relative z-10 text-base text-stone-800 dark:text-white drop-shadow-sm group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="flex flex-col items-center lg:items-start lg:flex-1 lg:ml-2.5">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-stone-700 dark:text-stone-300">Presupuesto</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="val-budget" class="text-[9px] sm:text-xs font-extrabold text-sky-700 dark:text-sky-400">50%</span>
+                                <span id="status-budget" class="text-[10px] text-stone-400 hidden lg:inline">• Estable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Barra de Progreso Temporal hacia 2030 -->
+                <div class="mt-2 pt-2 border-t border-stone-200 dark:border-stone-800 flex flex-col gap-1.5">
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] text-stone-500 dark:text-stone-400 font-semibold">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-flag-checkered text-stone-400"></i> 2026</span>
+                        <span id="turn-counter" class="px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 font-bold text-stone-700 dark:text-stone-300">Decisión 1 / 17</span>
+                        <span class="flex items-center gap-1">2030 <i class="fa-solid fa-trophy text-amber-500"></i></span>
+                    </div>
+                    <div class="w-full h-1.5 sm:h-2 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden p-0.5">
+                        <div id="year-progress" class="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-teal-500 rounded-full transition-all duration-500 shadow-sm" style="width: 6%;"></div>
+                    </div>
+                </div>
+
+                <!-- Atajos de Teclado PC (Solo visible en pantallas grandes) -->
+                <div class="hidden lg:flex flex-col gap-1 pt-2 text-[10px] text-stone-500 dark:text-stone-400 border-t border-stone-200/80 dark:border-stone-800/80">
+                    <span class="font-bold uppercase tracking-wider text-[8px] text-stone-400">Atajos de Teclado (3 Vías)</span>
+                    <div class="flex items-center justify-between">
+                        <span><kbd class="px-1 py-0.5 bg-stone-100 dark:bg-stone-800 border rounded font-mono">A/←</kbd> Opción A</span>
+                        <span><kbd class="px-1 py-0.5 bg-stone-100 dark:bg-stone-800 border rounded font-mono">W/↑</kbd> 3ª Vía</span>
+                        <span><kbd class="px-1 py-0.5 bg-stone-100 dark:bg-stone-800 border rounded font-mono">D/→</kbd> Opción B</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ESCENARIO CENTRAL (COLUMNA 4-9 EN PC / CENTRO EN MÓVIL): EL MAZO DE CARTAS, 3 BOTONES Y PODERES -->
+            <main class="w-full max-w-md sm:max-w-md lg:max-w-lg xl:max-w-xl lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center card-container relative">
+                
+                <!-- BARRA DE PODERES DE MANDATO DEL ALCALDE -->
+                <div class="flex items-center justify-between w-full mb-2 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border border-stone-200/90 dark:border-stone-800/80 shadow-sm text-[10px] sm:text-xs">
+                    <span class="font-bold text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> <span class="hidden sm:inline">Poderes del</span> Alcalde:
+                    </span>
+                    <div class="flex items-center gap-1 sm:gap-2">
+                        <!-- Poder 1: Consulta Ciudadana -->
+                        <button id="power-poll-btn" class="px-2 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-amber-100 dark:hover:bg-amber-950 font-bold transition flex items-center gap-1 border border-stone-200/60 dark:border-stone-700/60 active:scale-95" title="Revela con exactitud los porcentajes numéricos de impacto de cada opción">
+                            <span>🗳️ Consulta</span>
+                            <span id="power-poll-count" class="px-1 py-0.2 rounded-full bg-amber-500 text-white text-[9px] font-black">2</span>
+                        </button>
+
+                        <!-- Poder 2: Fondo Verde de Emergencia -->
+                        <button id="power-fund-btn" class="px-2 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-emerald-100 dark:hover:bg-emerald-950 font-bold transition flex items-center gap-1 border border-stone-200/60 dark:border-stone-700/60 active:scale-95" title="Rescata un pilar en crisis inyectando +25% de alivio">
+                            <span>💰 Fondo</span>
+                            <span id="power-fund-count" class="px-1 py-0.2 rounded-full bg-emerald-600 text-white text-[9px] font-black">1</span>
+                        </button>
+
+                        <!-- Poder 3: Pacto Público-Privado -->
+                        <button id="power-pact-btn" class="px-2 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-sky-100 dark:hover:bg-sky-950 font-bold transition flex items-center gap-1 border border-stone-200/60 dark:border-stone-700/60 active:scale-95" title="Pacto Mixto: Neutraliza el impacto negativo en Presupuesto en la siguiente decisión">
+                            <span>🤝 Pacto</span>
+                            <span id="power-pact-count" class="px-1 py-0.2 rounded-full bg-sky-600 text-white text-[9px] font-black">1</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de fondo decorativas (Efecto Mazo Físico) -->
+                <div class="w-[92%] h-[340px] sm:h-[370px] lg:h-[395px] bg-stone-200/70 dark:bg-stone-800/60 border border-stone-300/80 dark:border-stone-700/60 rounded-[2.5rem] absolute transform translate-y-3 scale-95 -z-10 shadow-sm"></div>
+                <div class="w-[85%] h-[340px] sm:h-[370px] lg:h-[395px] bg-stone-300/50 dark:bg-stone-800/30 border border-stone-300/50 dark:border-stone-700/40 rounded-[2.5rem] absolute transform translate-y-6 scale-90 -z-20 shadow-sm"></div>
+
+                <!-- Tarjeta Activa Principal -->
+                <div id="active-card" class="decision-card w-full min-h-[340px] sm:min-h-[370px] lg:min-h-[395px] bg-white dark:bg-stone-900 border-2 border-stone-200/90 dark:border-stone-700/80 rounded-[2.5rem] p-4 sm:p-5 flex flex-col justify-between shadow-xl shadow-stone-900/10 relative overflow-hidden cursor-grab transition-colors">
+                    
+                    <!-- Sellos de previsualización al arrastrar (Izquierda, Derecha, Arriba) -->
+                    <div id="swipe-badge-left" class="stamp-badge pointer-events-none opacity-0 absolute top-4 right-4 sm:top-5 sm:right-5 z-20 bg-rose-600 text-white font-extrabold text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-2xl border-2 border-white shadow-xl max-w-[70%] text-right leading-tight uppercase tracking-wide">
+                        Opción A
+                    </div>
+                    <div id="swipe-badge-right" class="stamp-badge stamp-badge-right pointer-events-none opacity-0 absolute top-4 left-4 sm:top-5 sm:left-5 z-20 bg-emerald-600 text-white font-extrabold text-[11px] sm:text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-2xl border-2 border-white shadow-xl max-w-[70%] text-left leading-tight uppercase tracking-wide">
+                        Opción B
+                    </div>
+                    <div id="swipe-badge-up" class="stamp-badge stamp-badge-up pointer-events-none opacity-0 absolute top-4 inset-x-0 mx-auto w-max z-20 bg-amber-500 text-stone-900 font-extrabold text-[11px] sm:text-xs px-4 py-2 rounded-2xl border-2 border-white shadow-xl text-center leading-tight uppercase tracking-wide">
+                        ✨ Tercera Vía (Opción C)
+                    </div>
+
+                    <!-- Cabecera de la Tarjeta: Distintivo Oficial ODS -->
+                    <div class="flex items-center justify-between gap-2">
+                        <span id="sdg-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm transition-all" style="background-color: #fcc30b; color: #0f172a;">
+                            <i class="fa-solid fa-solar-panel"></i>
+                            <span id="sdg-title" class="truncate max-w-[200px] sm:max-w-xs">ODS 7: Energía Asequible y Limpia</span>
+                        </span>
+                        <span id="card-index-indicator" class="text-[10px] sm:text-[11px] font-bold text-stone-400 dark:text-stone-500">1 / 17</span>
+                    </div>
+
+                    <!-- Personaje, Cargo e Ilustración Natural -->
+                    <div class="flex flex-col items-center my-1 sm:my-1.5 text-center">
+                        <div id="char-avatar-bg" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-stone-100 dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 flex items-center justify-center text-3xl sm:text-4xl shadow-inner mb-1.5 transform transition-transform hover:scale-105">
+                            <span id="char-emoji">⚡</span>
+                        </div>
+                        <h2 id="char-name" class="font-serif font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100 leading-snug">
+                            Ministra de Energía
+                        </h2>
+                        <span id="char-role" class="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 font-semibold tracking-wide">
+                            Consejo de Infraestructura
+                        </span>
+                    </div>
+
+                    <!-- Dilema Ciudadano / Planteamiento -->
+                    <div class="bg-stone-50 dark:bg-stone-800/80 rounded-2xl p-3 sm:p-3.5 border border-stone-200/80 dark:border-stone-700/70 my-1">
+                        <p id="card-dilemma" class="text-xs sm:text-sm text-stone-700 dark:text-stone-200 leading-relaxed text-center font-medium line-clamp-4">
+                            "Alcalde, la demanda eléctrica de la ciudad está al límite. ¿Qué dirección tomamos para no colapsar la red municipal?"
+                        </p>
+                    </div>
+
+                    <!-- Pistas de Gestos (3 Vías: Izquierda, Arriba, Derecha) -->
+                    <div class="flex justify-between items-center text-[9px] sm:text-[10px] text-stone-400 dark:text-stone-500 pt-1 px-1 font-semibold">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-left text-rose-500"></i> Izquierda</span>
+                        <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400"><i class="fa-solid fa-arrow-up"></i> Arriba (3ª Vía)</span>
+                        <span class="flex items-center gap-1">Derecha <i class="fa-solid fa-arrow-right text-emerald-500"></i></span>
+                    </div>
+                </div>
+
+                <!-- TRES BOTONES TÁCTILES ACCESIBLES: OPCIÓN A, TERCERA VÍA Y OPCIÓN B -->
+                <div class="w-full mt-2 sm:mt-2.5 grid grid-cols-3 gap-1.5 sm:gap-2">
+                    
+                    <!-- Botón 1: Opción A (Terracota) -->
+                    <button id="btn-left" class="group relative bg-white dark:bg-stone-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 active:scale-[0.97] border-2 border-stone-200 dark:border-stone-700 hover:border-rose-400 dark:hover:border-rose-600 rounded-2xl p-2 sm:p-2.5 text-left transition-all duration-200 flex flex-col justify-between shadow-sm min-h-[64px] sm:min-h-[70px]">
+                        <div class="flex items-center justify-between w-full mb-0.5">
+                            <span class="flex items-center gap-1 text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                <span>Opción A</span>
+                            </span>
+                            <span class="hidden lg:inline text-[8px] font-mono px-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-400">[A]</span>
+                        </div>
+                        <p id="btn-left-text" class="text-[11px] sm:text-xs font-bold text-stone-800 dark:text-stone-100 leading-snug line-clamp-2">
+                            Expandir red de carbón
+                        </p>
+                    </button>
+
+                    <!-- Botón 2: Opción C / Tercera Vía (Ocre Dorado / Innovación) -->
+                    <button id="btn-center" class="group relative bg-white dark:bg-stone-900 hover:bg-amber-50 dark:hover:bg-amber-950/40 active:scale-[0.97] border-2 border-stone-200 dark:border-stone-700 hover:border-amber-400 dark:hover:border-amber-600 rounded-2xl p-2 sm:p-2.5 text-center items-center transition-all duration-200 flex flex-col justify-between shadow-sm min-h-[64px] sm:min-h-[70px]">
+                        <div class="flex items-center justify-between w-full mb-0.5">
+                            <span class="text-center w-full flex items-center justify-center gap-1 text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                <span>3ª Vía</span>
+                            </span>
+                            <span class="hidden lg:inline text-[8px] font-mono px-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-400">[W]</span>
+                        </div>
+                        <p id="btn-center-text" class="text-[11px] sm:text-xs font-bold text-stone-800 dark:text-stone-100 leading-snug line-clamp-2 text-center">
+                            Cooperativa solar ciudadana
+                        </p>
+                    </button>
+
+                    <!-- Botón 3: Opción B (Verde Esmeralda) -->
+                    <button id="btn-right" class="group relative bg-white dark:bg-stone-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 active:scale-[0.97] border-2 border-stone-200 dark:border-stone-700 hover:border-emerald-400 dark:hover:border-emerald-600 rounded-2xl p-2 sm:p-2.5 text-right transition-all duration-200 flex flex-col justify-between items-end shadow-sm min-h-[64px] sm:min-h-[70px]">
+                        <div class="flex items-center justify-between w-full mb-0.5">
+                            <span class="hidden lg:inline text-[8px] font-mono px-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-400">[D]</span>
+                            <span class="flex items-center gap-1 text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <span>Opción B</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                        <p id="btn-right-text" class="text-[11px] sm:text-xs font-bold text-stone-800 dark:text-stone-100 leading-snug line-clamp-2">
+                            Planta solar municipal
+                        </p>
+                    </button>
+                </div>
+
+                <!-- LA VOZ DE LA CALLE / TITULARES EN VIVO TRAS CADA DECISIÓN -->
+                <div id="news-ticker" class="w-full mt-2 py-1.5 px-3 rounded-xl bg-stone-100/90 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/70 text-[10px] sm:text-[11px] flex items-center gap-2 text-stone-700 dark:text-stone-300">
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-extrabold text-[8px] uppercase tracking-wider flex-shrink-0">
+                        Prensa
+                    </span>
+                    <span id="news-ticker-text" class="truncate italic">
+                        "Inicia el mandato 2026: La ciudadanía espera con esperanza el primer decreto."
+                    </span>
+                </div>
+
+            </main>
+
+            <!-- PANEL DERECHO (COLUMNA 10-12 EN PC / OCULTO EN MÓVIL) -->
+            <aside class="hidden lg:flex lg:col-span-3 xl:col-span-3 flex-col gap-3 w-full">
+                
+                <!-- Tarjeta 1: Meta ODS Actual y Principio de la ONU -->
+                <div class="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md rounded-3xl p-4 border border-stone-200/90 dark:border-stone-800/80 shadow-lg shadow-stone-900/5 flex flex-col gap-2">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-stone-200 dark:border-stone-800">
+                        <span class="text-xs font-serif font-extrabold text-stone-800 dark:text-stone-100 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-earth-americas text-sky-500"></i> Meta en Curso
+                        </span>
+                        <span class="text-[10px] font-bold text-stone-400">Agenda 2030</span>
+                    </div>
+
+                    <div id="desktop-sdg-card" class="flex flex-col gap-2">
+                        <div class="flex items-center gap-2">
+                            <div id="desktop-sdg-icon-box" class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm" style="background-color: #fcc30b;">
+                                <i id="desktop-sdg-icon" class="fa-solid fa-solar-panel"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 id="desktop-sdg-title" class="font-bold text-xs text-stone-900 dark:text-stone-100 truncate">ODS 7: Energía Asequible</h4>
+                                <span class="text-[10px] text-stone-500 dark:text-stone-400">Meta global de la ONU</span>
+                            </div>
+                        </div>
+                        <p id="desktop-sdg-fact" class="text-[11px] text-stone-600 dark:text-stone-300 leading-relaxed bg-stone-50 dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200/70 dark:border-stone-700/60">
+                            El ODS 7 promueve la transición a energías renovables, reduciendo la huella de carbono y asegurando aire limpio.
+                        </p>
+                    </div>
+
+                    <!-- Rastreador de los 17 ODS -->
+                    <div class="pt-1">
+                        <div class="flex justify-between items-center text-[10px] font-bold text-stone-400 mb-1.5">
+                            <span>Progreso de Metas</span>
+                            <span id="desktop-sdg-counter">1 de 17</span>
+                        </div>
+                        <div id="desktop-sdg-chips" class="grid grid-cols-6 gap-1.5">
+                            <!-- Rellenado dinámicamente con los 17 números de ODS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Resumen en Vivo de la Bitácora -->
+                <div class="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md rounded-3xl p-4 border border-stone-200/90 dark:border-stone-800/80 shadow-lg shadow-stone-900/5 flex flex-col gap-2">
+                    <div class="flex items-center justify-between pb-1.5 border-b border-stone-200 dark:border-stone-800">
+                        <span class="text-xs font-serif font-extrabold text-stone-800 dark:text-stone-100 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-scroll text-amber-600"></i> Últimos Decretos
+                        </span>
+                        <button onclick="document.getElementById('log-btn').click()" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                            Ver todo
+                        </button>
+                    </div>
+
+                    <div id="desktop-recent-list" class="space-y-1.5 text-[11px]">
+                        <div class="py-3 text-center text-stone-400 text-xs">
+                            <i class="fa-regular fa-folder-open text-xl mb-1 block"></i>
+                            Esperando primer decreto...
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL PRINCIPAL: BIENVENIDA, DERROTA Y VICTORIA -->
+    <div id="game-modal" class="fixed inset-0 z-50 bg-stone-950/75 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 rounded-[2.5rem] max-w-md w-full p-5 sm:p-6 text-center shadow-2xl transition-all">
+            <div id="modal-icon-container" class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl mx-auto flex items-center justify-center text-3xl sm:text-4xl mb-3.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 shadow-inner">
+                <span id="modal-emoji">🏛️</span>
+            </div>
+            
+            <span id="modal-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 mb-2">
+                Mandato Ciudadano ODS
+            </span>
+
+            <h2 id="modal-title" class="font-serif text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-stone-50 mb-2">
+                ¡Bienvenido, Alcalde!
+            </h2>
+
+            <p id="modal-desc" class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed mb-4">
+                Tu meta es conducir esta ciudad desde el año 2026 hasta el 2030, manteniendo en armonía los cuatro pilares del desarrollo sostenible.
+            </p>
+
+            <!-- Caja de Datos ODS / Lección -->
+            <div id="modal-fact-box" class="bg-stone-50 dark:bg-stone-800/90 border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 sm:p-4 mb-4 text-left">
+                <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-xs mb-1.5">
+                    <i class="fa-solid fa-leaf"></i>
+                    <span id="modal-fact-title">Principios de Sostenibilidad</span>
+                </div>
+                <p id="modal-fact-text" class="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
+                    Al arrastrar (izquierda, derecha o arriba) o pasar el cursor verás círculos sobre los pilares afectados. Cuentas con 3 poderes de emergencia. ¡Si cualquier pilar cae al <strong>0%</strong>, tu mandato se interrumpirá!
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <button id="modal-action-btn" class="w-full py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-sm shadow-lg shadow-emerald-700/25 transition">
+                    Comenzar Mandato
+                </button>
+                <button id="modal-share-btn" class="w-full py-2.5 px-4 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold hidden transition">
+                    <i class="fa-regular fa-copy mr-1.5"></i> Copiar Resumen de Mandato
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BITÁCORA DE GESTIÓN (HISTORIAL COMPLETO DE DECRETOS) -->
+    <div id="log-modal" class="fixed inset-0 z-50 bg-stone-950/75 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 rounded-[2.5rem] max-w-lg w-full p-5 sm:p-6 text-left shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-stone-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-book-bookmark text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif font-bold text-base text-stone-900 dark:text-stone-50">Bitácora de Mandato</h3>
+                        <p class="text-[10px] text-stone-500 dark:text-stone-400">Registro oficial de acuerdos y decisiones</p>
+                    </div>
+                </div>
+                <button id="close-log-btn" class="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 flex items-center justify-center text-stone-500 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Lista de Decisiones Tomadas -->
+            <div id="log-list" class="flex-1 overflow-y-auto my-3 pr-1 space-y-2.5 text-xs">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+
+            <div class="pt-2 border-t border-stone-200 dark:border-stone-800 flex justify-between items-center text-stone-500 text-[11px]">
+                <span id="log-count">0 decisiones registradas</span>
+                <button id="close-log-bottom-btn" class="px-4 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-bold">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * BASE DE DATOS DE DILEMAS ODS CON SISTEMA DE 3 OPCIONES:
+         * - left: Opción A (Austeridad / Tradicional / Inmediato)
+         * - center: Opción C (Tercera Vía / Innovación Circular / Alianza Comunitaria)
+         * - right: Opción B (Transformación Verde Pura / Inversión Pública Alta)
+         * Incluye reacciones de prensa y ciudadanía para "La Voz de la Calle".
+         */
+        const CARDS_DECK = [
+            {
+                sdg: "ODS 7: Energía Asequible y No Contaminante",
+                sdgNumber: 7,
+                sdgColor: "#fcc30b",
+                textColor: "#0f172a",
+                icon: "fa-solar-panel",
+                emoji: "⚡",
+                character: "Ministra de Energía",
+                role: "Red Eléctrica Municipal",
+                dilemma: "\"Alcalde, la ciudad necesita más electricidad urgente. ¿Expandimos el carbón, construimos una planta solar municipal o apoyamos cooperativas solares en techos vecinales?\"",
+                left: {
+                    text: "Expandir red de carbón",
+                    effects: { economy: +10, society: -10, environment: -25, budget: +15 },
+                    reaction: "Vecinos de la periferia tosen: 'El aire se volvió irrespirable tras reactivar la carbonífera'."
+                },
+                center: {
+                    text: "Cooperativas solares barriales",
+                    effects: { economy: +15, society: +20, environment: +15, budget: -5 },
+                    reaction: "El Faro: 'Familias reducen su factura de luz un 40% instalando paneles comunitarios'."
+                },
+                right: {
+                    text: "Planta solar 100% municipal",
+                    effects: { economy: +10, society: +15, environment: +25, budget: -20 },
+                    reaction: "Eco Diario: 'Inauguran mega-parque solar público: la ciudad avanza a la descarbonización'."
+                },
+                fact: "El ODS 7 promueve la transición a energías renovables, reduciendo la huella de carbono y asegurando aire limpio para la ciudadanía."
+            },
+            {
+                sdg: "ODS 1: Fin de la Pobreza",
+                sdgNumber: 1,
+                sdgColor: "#e5243b",
+                textColor: "#ffffff",
+                icon: "fa-hand-holding-dollar",
+                emoji: "🌱",
+                character: "Comité Barrial Comunitario",
+                role: "Inclusión y Desarrollo Social",
+                dilemma: "\"Familias vulnerables sufren por el costo de vida. ¿Aplicamos austeridad fiscal, creamos subsidios verdes o abrimos un banco popular de herramientas y autoempleo?\"",
+                left: {
+                    text: "Priorizar austeridad fiscal",
+                    effects: { economy: -10, society: -25, environment: 0, budget: +20 },
+                    reaction: "Protestas en la plaza: 'La falta de asistencia hunde a cientos de hogares bajo la línea de pobreza'."
+                },
+                center: {
+                    text: "Banco de microcréditos y oficios",
+                    effects: { economy: +20, society: +20, environment: +10, budget: -10 },
+                    reaction: "Voz Barrial: 'Más de 300 vecinos crearon emprendimientos circulares gracias al banco popular'."
+                },
+                right: {
+                    text: "Renta de transición ecológica",
+                    effects: { economy: +15, society: +25, environment: +10, budget: -20 },
+                    reaction: "Informe Social: 'Se reduce drásticamente la indigencia urbana gracias al apoyo de emergencia'."
+                },
+                fact: "El ODS 1 busca erradicar la pobreza mediante la protección social universal y el fortalecimiento de la resiliencia económica comunitaria."
+            },
+            {
+                sdg: "ODS 6: Agua Limpia y Saneamiento",
+                sdgNumber: 6,
+                sdgColor: "#26bde2",
+                textColor: "#0f172a",
+                icon: "fa-droplet",
+                emoji: "🚰",
+                character: "Directora Hidráulica",
+                role: "Gestión de Cuencas y Ríos",
+                dilemma: "\"Fábricas vierten químicos al río. ¿Aplicamos una multa menor, construimos una planta de tratamiento con deuda o instalamos bio-humedales y captación pluvial?\"",
+                left: {
+                    text: "Solo aplicar multa menor",
+                    effects: { economy: +10, society: -20, environment: -25, budget: +15 },
+                    reaction: "Alerta sanitaria: 'Peces muertos flotan en la orilla del río principal'."
+                },
+                center: {
+                    text: "Bio-humedales y captación de lluvia",
+                    effects: { economy: +10, society: +15, environment: +20, budget: -10 },
+                    reaction: "Naturaleza Viva: 'Los nuevos humedales filtran el agua naturalmente a un tercio del costo'."
+                },
+                right: {
+                    text: "Planta de tratamiento industrial",
+                    effects: { economy: -5, society: +20, environment: +25, budget: -20 },
+                    reaction: "Boletín Oficial: 'Entra en operación la planta de tratamiento más moderna de la provincia'."
+                },
+                fact: "El ODS 6 protege las cuencas hídricas naturales y garantiza que toda la población acceda a agua potable segura y saneamiento digno."
+            },
+            {
+                sdg: "ODS 11: Ciudades y Comunidades Sostenibles",
+                sdgNumber: 11,
+                sdgColor: "#fd9d24",
+                textColor: "#0f172a",
+                icon: "fa-bicycle",
+                emoji: "🚲",
+                character: "Planificador Urbano",
+                role: "Movilidad y Espacio Público",
+                dilemma: "\"El tráfico céntrico colapsa las avenidas. ¿Ensanchamos vías para autos, peatonalizamos con ciclovías o subsidiamos un tranvía eléctrico público?\"",
+                left: {
+                    text: "Ensanchar vías para autos",
+                    effects: { economy: +15, society: -10, environment: -20, budget: -15 },
+                    reaction: "Automovilistas atrapados: 'El tráfico inducido colapsó las nuevas avenidas en pocas semanas'."
+                },
+                center: {
+                    text: "Corredor de ciclovías y arbolado",
+                    effects: { economy: +10, society: +20, environment: +15, budget: -10 },
+                    reaction: "Comerciantes céntricos: 'La peatonalización aumentó las ventas un 25% y florecen los cafés'."
+                },
+                right: {
+                    text: "Tranvía eléctrico metropolitano",
+                    effects: { economy: +5, society: +20, environment: +20, budget: -20 },
+                    reaction: "Crónica Urbana: 'Viajar en tranvía reduce 45 minutos diarios de viaje a los trabajadores'."
+                },
+                fact: "El ODS 11 busca urbes amigables, seguras y descarbonizadas con transporte público masivo no contaminante."
+            },
+            {
+                sdg: "ODS 8: Trabajo Decente y Crecimiento Económico",
+                sdgNumber: 8,
+                sdgColor: "#a21942",
+                textColor: "#ffffff",
+                icon: "fa-briefcase",
+                emoji: "🏗️",
+                character: "Cámara de Comercio Sostenible",
+                role: "Desarrollo Económico Local",
+                dilemma: "\"Un consorcio empresarial busca instalarse en la ciudad. ¿Damos exención total de impuestos, exigimos cuotas de empleo verde o creamos una incubadora de pymes ecológicas?\"",
+                left: {
+                    text: "Exención fiscal total sin condiciones",
+                    effects: { economy: +20, society: -10, environment: -5, budget: -15 },
+                    reaction: "Sindicatos alertan: 'Empleos precarios y contratos temporales sin estabilidad laboral'."
+                },
+                center: {
+                    text: "Incubadora municipal de bio-pymes",
+                    effects: { economy: +20, society: +15, environment: +15, budget: -10 },
+                    reaction: "Revista Innovar: 'Nacen 50 cooperativas tecnológicas con arraigo local y salarios justos'."
+                },
+                right: {
+                    text: "Exigir empleo verde y salarios justos",
+                    effects: { economy: +15, society: +20, environment: +10, budget: +5 },
+                    reaction: "La Empresa firma acuerdo: 'Se contratan 400 técnicos con certificación ambiental oficial'."
+                },
+                fact: "El ODS 8 une el crecimiento productivo con condiciones laborales dignas, erradicando la precarización y promoviendo la economía circular."
+            },
+            {
+                sdg: "ODS 2: Hambre Cero",
+                sdgNumber: 2,
+                sdgColor: "#dda63a",
+                textColor: "#0f172a",
+                icon: "fa-wheat-awn",
+                emoji: "🌾",
+                character: "Cooperativa Agraria Familiar",
+                role: "Soberanía Alimentaria",
+                dilemma: "\"La sequía encareció las verduras. ¿Importamos alimentos ultraprocesados baratos, abrimos comedores con subsidio o creamos una red de huertos agroecológicos?\"",
+                left: {
+                    text: "Importar ultraprocesados baratos",
+                    effects: { economy: -10, society: -20, environment: -10, budget: +15 },
+                    reaction: "Médicos alertan: 'Se disparan casos de malnutrición y diabetes infantil en escuelas'."
+                },
+                center: {
+                    text: "Red de huertos agroecológicos",
+                    effects: { economy: +15, society: +20, environment: +15, budget: -10 },
+                    reaction: "Feria Frutihortícola: 'Las escuelas cosechan sus propios tomates y lechugas sin agrotóxicos'."
+                },
+                right: {
+                    text: "Comedores con menú fresco subsidiado",
+                    effects: { economy: +15, society: +25, environment: +10, budget: -20 },
+                    reaction: "Familias agradecidas: 'Tres mil platos calientes diarios aseguran la nutrición de los niños'."
+                },
+                fact: "El ODS 2 asegura alimentación nutritiva mediante la agricultura sostenible, circuitos cortos de distribución y comercio justo."
+            },
+            {
+                sdg: "ODS 12: Producción y Consumo Responsables",
+                sdgNumber: 12,
+                sdgColor: "#bf8b2e",
+                textColor: "#ffffff",
+                icon: "fa-recycle",
+                emoji: "♻️",
+                character: "Jefa de Economía Circular",
+                role: "Gestión de Residuos",
+                dilemma: "\"El vertedero municipal colapsa. ¿Abrimos otro basurero barato afuera, construimos una planta de reciclaje o premiamos a comercios con cero desperdicios?\"",
+                left: {
+                    text: "Abrir basurero en la periferia",
+                    effects: { economy: -5, society: -15, environment: -25, budget: +10 },
+                    reaction: "Vecinos de la periferia cortan rutas: 'No aceptaremos ser el patio trasero de la basura'."
+                },
+                center: {
+                    text: "Descuento tributario por basura cero",
+                    effects: { economy: +15, society: +15, environment: +20, budget: -5 },
+                    reaction: "Comercios verdes: 'El 70% de los restaurantes separa residuos orgánicos para compost'."
+                },
+                right: {
+                    text: "Centro municipal de reciclaje y biogás",
+                    effects: { economy: +20, society: +10, environment: +25, budget: -15 },
+                    reaction: "Industria limpia: 'El vertedero genera electricidad renovable a partir del biogás orgánico'."
+                },
+                fact: "El ODS 12 fomenta la reducción radical de desechos mediante prevención, reducción, reciclaje y reutilización de recursos."
+            },
+            {
+                sdg: "ODS 4: Educación de Calidad",
+                sdgNumber: 4,
+                sdgColor: "#c5192d",
+                textColor: "#ffffff",
+                icon: "fa-graduation-cap",
+                emoji: "🎓",
+                character: "Red de Escuelas Públicas",
+                role: "Consejo Educativo",
+                dilemma: "\"Las escuelas rurales no tienen conectividad ni ciencias. ¿Postergamos el gasto, compramos tablets importadas o creamos aulas maker con reciclaje tecnológico?\"",
+                left: {
+                    text: "Postergar inversión para ahorrar",
+                    effects: { economy: -15, society: -25, environment: 0, budget: +20 },
+                    reaction: "Fuga escolar: 'Alumnos abandonan las aulas rurales por falta de oportunidades de futuro'."
+                },
+                center: {
+                    text: "Aulas maker y reciclaje de PC",
+                    effects: { economy: +20, society: +20, environment: +15, budget: -8 },
+                    reaction: "Feria de Ciencias: 'Estudiantes reparan computadoras en desuso y crean sensores de riego'."
+                },
+                right: {
+                    text: "Laboratorios de ciencia e internet satelital",
+                    effects: { economy: +20, society: +25, environment: +5, budget: -15 },
+                    reaction: "Docentes emocionados: 'Por primera vez todos los colegios del municipio tienen internet de alta velocidad'."
+                },
+                fact: "El ODS 4 garantiza educación inclusiva, equitativa y de calidad como motor esencial para superar las brechas estructurales."
+            },
+            {
+                sdg: "ODS 13: Acción por el Clima",
+                sdgNumber: 13,
+                sdgColor: "#3f7e44",
+                textColor: "#ffffff",
+                icon: "fa-cloud-sun-rain",
+                emoji: "🌡️",
+                character: "Comité de Resiliencia Climática",
+                role: "Defensa Civil",
+                dilemma: "\"Se pronostican olas de calor extremas. ¿Vendemos terrenos para edificios con aire acondicionado, plantamos bosques urbanos o techamos plazas con sombreadores solares?\"",
+                left: {
+                    text: "Vender terrenos a constructoras",
+                    effects: { economy: +15, society: -20, environment: -25, budget: +25 },
+                    reaction: "Golpes de calor récord: 'Hospitales colapsan por descompensaciones térmicas en el asfalto'."
+                },
+                center: {
+                    text: "Sombreadores solares y bebederos",
+                    effects: { economy: +10, society: +15, environment: +15, budget: -8 },
+                    reaction: "Plazas vivas: 'Refugios climáticos comunitarios bajan 5 grados la temperatura barrial'."
+                },
+                right: {
+                    text: "Crear cinturón de bosques urbanos",
+                    effects: { economy: +5, society: +20, environment: +25, budget: -15 },
+                    reaction: "Reporte meteorológico: 'Cinco mil árboles nativos enfrían el aire de la ciudad'."
+                },
+                fact: "El ODS 13 urge adoptar medidas inmediatas contra el cambio climático, incrementando la cobertura arbórea y la resiliencia térmica."
+            },
+            {
+                sdg: "ODS 3: Salud y Bienestar",
+                sdgNumber: 3,
+                sdgColor: "#4c9f38",
+                textColor: "#ffffff",
+                icon: "fa-heart-pulse",
+                emoji: "🏥",
+                character: "Consejo de Salud Integral",
+                role: "Atención Primaria",
+                dilemma: "\"Crecen las alergias respiratorias y el estrés laboral. ¿Cobramos copagos altos, abrimos un mega-hospital o fortalecemos promotores de salud barrial y deporte?\"",
+                left: {
+                    text: "Cobrar copagos médicos altos",
+                    effects: { economy: -10, society: -25, environment: 0, budget: +20 },
+                    reaction: "Carteles en policlínicos: 'Vecinos de bajos recursos descontinúan sus tratamientos crónicos'."
+                },
+                center: {
+                    text: "Promotores comunitarios y vida activa",
+                    effects: { economy: +10, society: +20, environment: +10, budget: -8 },
+                    reaction: "Salud pública: 'Cae un 35% la internación de emergencia gracias a chequeos preventivos barriales'."
+                },
+                right: {
+                    text: "Centros barriales de salud preventiva",
+                    effects: { economy: +10, society: +25, environment: 0, budget: -20 },
+                    reaction: "Jornada histórica: 'Inauguran diez clínicas de proximidad con atención médica y psicológica gratuita'."
+                },
+                fact: "El ODS 3 busca garantizar vida sana y promover el bienestar para todas las edades a través de servicios preventivos accesibles."
+            },
+            {
+                sdg: "ODS 9: Industria, Innovación e Infraestructura",
+                sdgNumber: 9,
+                sdgColor: "#fd6925",
+                textColor: "#0f172a",
+                icon: "fa-microchip",
+                emoji: "🔬",
+                character: "Polo de Innovación Bio-tecnológica",
+                role: "Universidad Tecnológica",
+                dilemma: "\"Científicos locales inventaron un biofiltro que convierte humo de fábricas en biofertilizante. ¿Archivamos el proyecto, cofinanciamos la patente pública o creamos consorcio mixto?\"",
+                left: {
+                    text: "Archivar por prudencia fiscal",
+                    effects: { economy: -10, society: -10, environment: -10, budget: +5 },
+                    reaction: "Fuga de cerebros: 'Investigadores premiados venden su invento al extranjero por falta de apoyo'."
+                },
+                center: {
+                    text: "Consorcio público-universitario local",
+                    effects: { economy: +20, society: +15, environment: +15, budget: -8 },
+                    reaction: "Patente abierta: 'Fábricas locales adoptan el biofiltro y reducen sus humos a mitad de precio'."
+                },
+                right: {
+                    text: "Cofinanciar patente municipal exclusiva",
+                    effects: { economy: +25, society: +10, environment: +20, budget: -15 },
+                    reaction: "Inversión global: 'La ciudad exporta tecnología verde y multiplica sus ingresos futuros'."
+                },
+                fact: "El ODS 9 moderniza la infraestructura con tecnología limpia y promueve la investigación científica aplicada a nivel local."
+            },
+            {
+                sdg: "ODS 5: Igualdad de Género",
+                sdgNumber: 5,
+                sdgColor: "#ff3a21",
+                textColor: "#ffffff",
+                icon: "fa-scale-balanced",
+                emoji: "👩‍💼",
+                character: "Red de Cuidados y Familias",
+                role: "Equidad Social",
+                dilemma: "\"Madres cuidadoras no pueden trabajar remuneradamente por falta de guarderías. ¿Dejamos el presupuesto intacto, abrimos jardines públicos o apoyamos cooperativas de cuidado?\"",
+                left: {
+                    text: "Mantener presupuesto sin cambios",
+                    effects: { economy: -15, society: -20, environment: 0, budget: +10 },
+                    reaction: "Brecha laboral récord: 'Cientos de mujeres quedan excluidas de empleos formales'."
+                },
+                center: {
+                    text: "Cooperativas comunitarias de cuidado",
+                    effects: { economy: +20, society: +20, environment: +5, budget: -8 },
+                    reaction: "Red de cuidados: 'Madres trabajadoras crean casas nido barriales con certificación y salario digno'."
+                },
+                right: {
+                    text: "Inaugurar red de guarderías públicas",
+                    effects: { economy: +25, society: +20, environment: 0, budget: -15 },
+                    reaction: "Familias celebran: 'Seis mil niños acceden a estimulación temprana pública y de calidad'."
+                },
+                fact: "El ODS 5 valora los cuidados y el trabajo doméstico no remunerado, empoderando económicamente a las mujeres y familias."
+            },
+            {
+                sdg: "ODS 15: Vida de Ecosistemas Terrestres",
+                sdgNumber: 15,
+                sdgColor: "#56c02b",
+                textColor: "#0f172a",
+                icon: "fa-tree",
+                emoji: "🦉",
+                character: "Guardaparques del Bosque Nativo",
+                role: "Conservación de la Biodiversidad",
+                dilemma: "\"Una empresa minera ofrece canon por extraer grava de un humedal virgen. ¿Autorizamos la cantera, declaramos Reserva Estricta o creamos un bioparque con senderismo guiado?\"",
+                left: {
+                    text: "Autorizar extracción de grava",
+                    effects: { economy: +15, society: -15, environment: -30, budget: +25 },
+                    reaction: "Humedal destruido: 'Aves migratorias abandonan la laguna contaminada por maquinaria pesada'."
+                },
+                center: {
+                    text: "Bioparque ecoturístico comunitario",
+                    effects: { economy: +15, society: +15, environment: +20, budget: -5 },
+                    reaction: "Ecoturismo en alza: 'Ex-mineros reconvertidos en guías naturales reciben turistas de todo el país'."
+                },
+                right: {
+                    text: "Declarar Parque Natural Intangible",
+                    effects: { economy: +15, society: +15, environment: +25, budget: +5 },
+                    reaction: "Santuario de flora: 'La UNESCO reconoce el bosque nativo de la ciudad como reserva de biosfera'."
+                },
+                fact: "El ODS 15 detiene la pérdida de biodiversidad y protege humedales y bosques frente a la degradación de ecosistemas."
+            },
+            {
+                sdg: "ODS 16: Paz, Justicia e Instituciones Sólidas",
+                sdgNumber: 16,
+                sdgColor: "#00689d",
+                textColor: "#ffffff",
+                icon: "fa-landmark",
+                emoji: "⚖️",
+                character: "Auditoría Ciudadana",
+                role: "Transparencia y Gobierno Abierto",
+                dilemma: "\"Auditoría detectó sobreprecios del mandato anterior. ¿Sellamos el archivo para evitar juicios, publicamos todo en tribunales o abrimos un portal de datos transparentes con participación?\"",
+                left: {
+                    text: "Sellar archivo y guardar silencio",
+                    effects: { economy: -15, society: -25, environment: 0, budget: -15 },
+                    reaction: "Escándalo filtrado: 'La ciudadanía denuncia encubrimiento en las puertas de la alcaldía'."
+                },
+                center: {
+                    text: "Portal de gobierno abierto y cabildos",
+                    effects: { economy: +15, society: +25, environment: +5, budget: +10 },
+                    reaction: "Transparencia Internacional premia al municipio: 'Cada centavo público puede auditarse en línea'."
+                },
+                right: {
+                    text: "Juicio penal público y restitución",
+                    effects: { economy: +15, society: +20, environment: 0, budget: +25 },
+                    reaction: "Justicia civil: 'Se recuperan diez millones de fondos defraudados para escuelas públicas'."
+                },
+                fact: "El ODS 16 fortalece la confianza ciudadana combatiendo la corrupción y fomentando instituciones eficaces y transparentes."
+            },
+            {
+                sdg: "ODS 14: Vida Submarina y Costera",
+                sdgNumber: 14,
+                sdgColor: "#0a97d9",
+                textColor: "#ffffff",
+                icon: "fa-fish",
+                emoji: "🐋",
+                character: "Asociación de Pescadores Artesanales",
+                role: "Zona Costera y Ribereña",
+                dilemma: "\"Plásticos descartables asfixian la fauna ribereña. ¿No intervenimos, prohibimos plásticos con multas severas o creamos un sistema de envases retornables con comercios?\"",
+                left: {
+                    text: "No regular el plástico descartable",
+                    effects: { economy: -15, society: -10, environment: -25, budget: +5 },
+                    reaction: "Pescadores en crisis: 'Las redes extraen más bolsas de polietileno que peces del río'."
+                },
+                center: {
+                    text: "Red de envases retornables de vidrio",
+                    effects: { economy: +15, society: +15, environment: +20, budget: -5 },
+                    reaction: "Comercio ribereño: 'El 80% de las bebidas circulan en botellas lavables y se crea empleo local'."
+                },
+                right: {
+                    text: "Prohibición estricta y subsidio de yute",
+                    effects: { economy: +10, society: +15, environment: +25, budget: -10 },
+                    reaction: "Riberas limpias: 'Familias disfrutan de playas fluviales sin residuos plásticos a la vista'."
+                },
+                fact: "El ODS 14 preserva los océanos y ríos combatiendo la contaminación por plásticos que amenaza la seguridad alimentaria."
+            },
+            {
+                sdg: "ODS 10: Reducción de las Desigualdades",
+                sdgNumber: 10,
+                sdgColor: "#dd1367",
+                textColor: "#ffffff",
+                icon: "fa-handshake-angle",
+                emoji: "🏘️",
+                character: "Presupuesto Participativo Vecinal",
+                role: "Cohesión Territorial",
+                dilemma: "\"Disponemos de superávit. ¿Construimos un helipuerto ejecutivo, renovamos parques en barrios postergados o financiamos asambleas vecinales vinculantes?\"",
+                left: {
+                    text: "Construir helipuerto ejecutivo",
+                    effects: { economy: +15, society: -25, environment: -10, budget: +15 },
+                    reaction: "Indignación barrial: 'Mientras faltan cloacas, la alcaldía gasta en lujos para pocos'."
+                },
+                center: {
+                    text: "Presupuesto participativo en asambleas",
+                    effects: { economy: +15, society: +25, environment: +10, budget: -10 },
+                    reaction: "Democracia activa: 'Vecinos deciden por voto directo iluminar calles y crear plazas deportivas'."
+                },
+                right: {
+                    text: "Pavimentación y cloacas en barrios vulnerables",
+                    effects: { economy: +10, society: +25, environment: +15, budget: -15 },
+                    reaction: "Histórica integración: 'Diez mil familias acceden por fin a agua corriente e iluminación LED'."
+                },
+                fact: "El ODS 10 reduce las asimetrías territoriales asegurando que todos los sectores de la ciudad disfruten de infraestructura digna."
+            },
+            {
+                sdg: "ODS 17: Alianzas para Lograr los Objetivos",
+                sdgNumber: 17,
+                sdgColor: "#19486a",
+                textColor: "#ffffff",
+                icon: "fa-globe",
+                emoji: "🤝",
+                character: "Cumbre Mundial ONU Hábitat",
+                role: "Cooperación Global 2030",
+                dilemma: "\"¡Año 2029! La ONU evalúa el modelo de tu ciudad. ¿Nos aislamos para no compartir patentes, firmamos la Alianza Verde con la ONU o creamos un consorcio con ciudades hermanas?\"",
+                left: {
+                    text: "Rechazar cooperación y aislarnos",
+                    effects: { economy: -10, society: -15, environment: -10, budget: +10 },
+                    reaction: "Aislamiento internacional: 'La ciudad queda excluida de fondos climáticos globales'."
+                },
+                center: {
+                    text: "Red de ciudades sostenibles en código abierto",
+                    effects: { economy: +20, society: +20, environment: +15, budget: +15 },
+                    reaction: "Liderazgo regional: 'Quince municipios vecinos adoptan las bio-políticas creadas en tu gestión'."
+                },
+                right: {
+                    text: "Firmar Fondo Verde Internacional ONU",
+                    effects: { economy: +20, society: +20, environment: +20, budget: +20 },
+                    reaction: "Reconocimiento global: 'Naciones Unidas declara a la ciudad como faro mundial de la Agenda 2030'."
+                },
+                fact: "El ODS 17 demuestra que los grandes desafíos de la humanidad solo se conquistan mediante la solidaridad, el conocimiento compartido y alianzas multilaterales."
+            }
+        ];
+
+        // Estado Global del Juego
+        let stats = {
+            economy: 50,
+            society: 50,
+            environment: 50,
+            budget: 50
+        };
+
+        let currentTurn = 0;
+        const totalTurns = CARDS_DECK.length; // 17 metas completas
+        const months = ["Ene", "Abr", "Jul", "Oct"];
+        let isAnimating = false;
+        let advisorMode = false;
+        let soundEnabled = true;
+        let decisionHistory = [];
+
+        // Poderes del Alcalde (Decretos de Emergencia)
+        let powers = {
+            pollCount: 2,    // Consulta ciudadana: Revela los números exactos en este turno
+            fundCount: 1,    // Fondo de Contingencia Verde: Suma +25% a un pilar crítico
+            pactCount: 1     // Pacto Público-Privado: Hace que la siguiente decisión no consuma presupuesto
+        };
+        let isPactActive = false;
+        let isPollActiveForCurrentTurn = false;
+
+        // Referencias DOM
+        const activeCard = document.getElementById('active-card');
+        const swipeBadgeLeft = document.getElementById('swipe-badge-left');
+        const swipeBadgeRight = document.getElementById('swipe-badge-right');
+        const swipeBadgeUp = document.getElementById('swipe-badge-up');
+        const btnLeft = document.getElementById('btn-left');
+        const btnCenter = document.getElementById('btn-center');
+        const btnRight = document.getElementById('btn-right');
+        const gameModal = document.getElementById('game-modal');
+        const modalActionBtn = document.getElementById('modal-action-btn');
+        const modalShareBtn = document.getElementById('modal-share-btn');
+        const helpBtn = document.getElementById('help-btn');
+        const logBtn = document.getElementById('log-btn');
+        const logModal = document.getElementById('log-modal');
+        const closeLogBtn = document.getElementById('close-log-btn');
+        const closeLogBottomBtn = document.getElementById('close-log-bottom-btn');
+        const logList = document.getElementById('log-list');
+        const logCount = document.getElementById('log-count');
+        const advisorBtn = document.getElementById('advisor-btn');
+        const audioBtn = document.getElementById('audio-btn');
+        const audioIcon = document.getElementById('audio-icon');
+        const themeBtn = document.getElementById('theme-btn');
+        const themeIcon = document.getElementById('theme-icon');
+        const newsTickerText = document.getElementById('news-ticker-text');
+
+        // Botones de Poderes
+        const powerPollBtn = document.getElementById('power-poll-btn');
+        const powerPollCount = document.getElementById('power-poll-count');
+        const powerFundBtn = document.getElementById('power-fund-btn');
+        const powerFundCount = document.getElementById('power-fund-count');
+        const powerPactBtn = document.getElementById('power-pact-btn');
+        const powerPactCount = document.getElementById('power-pact-count');
+
+        /**
+         * SISTEMA DE AUDIO PROCEDURAL (WEB AUDIO API)
+         */
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            try {
+                const now = ctx.currentTime;
+                if (type === 'swipe') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(140, now);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.08);
+                    gain.gain.setValueAtTime(0.04, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.09);
+                } else if (type === 'decision') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.13);
+                } else if (type === 'power') {
+                    // Resonancia de campana mágica de decreto
+                    [587.33, 880].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        const start = now + (i * 0.08);
+                        gain.gain.setValueAtTime(0.08, start);
+                        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(start);
+                        osc.stop(start + 0.36);
+                    });
+                } else if (type === 'victory') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        const start = now + (i * 0.1);
+                        gain.gain.setValueAtTime(0.08, start);
+                        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(start);
+                        osc.stop(start + 0.52);
+                    });
+                } else if (type === 'gameover') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(90, now + 0.4);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.42);
+                }
+            } catch (err) {}
+        }
+
+        /**
+         * VIBRACIÓN HÁPTICA PARA MÓVILES
+         */
+        function triggerHaptic(duration = 20) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        // Renderizar Cuadrícula de Chips de los 17 ODS en PC
+        function renderDesktopSdgChips() {
+            const container = document.getElementById('desktop-sdg-chips');
+            if (!container) return;
+            container.innerHTML = CARDS_DECK.map((card, idx) => {
+                const isPassed = idx < currentTurn;
+                const isCurrent = idx === currentTurn;
+                let bgStyle = isPassed 
+                    ? `background-color: ${card.sdgColor}; opacity: 0.8;` 
+                    : (isCurrent ? `background-color: ${card.sdgColor}; transform: scale(1.15); box-shadow: 0 0 8px ${card.sdgColor}; font-weight: 800; border: 2px solid white;` : 'background-color: #78716c; opacity: 0.35;');
+                return `
+                    <div title="${card.sdg}" class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] text-white font-bold transition-all" style="${bgStyle}">
+                        ${idx + 1}
+                    </div>
+                `;
+            }).join('');
+            const counter = document.getElementById('desktop-sdg-counter');
+            if (counter) counter.textContent = `${Math.min(currentTurn + 1, totalTurns)} de ${totalTurns}`;
+        }
+
+        // Actualizar Interfaz de Barras de Pilares
+        function updateStatsUI() {
+            const keys = ['economy', 'society', 'environment', 'budget'];
+            const statusTexts = {
+                economy: { high: '• Floreciente', mid: '• Estable', low: '• En Riesgo' },
+                society: { high: '• Armoniosa', mid: '• Estable', low: '• Inquieta' },
+                environment: { high: '• Regenerado', mid: '• Estable', low: '• Crítico' },
+                budget: { high: '• Holgado', mid: '• Estable', low: '• Al Límite' }
+            };
+
+            keys.forEach(key => {
+                const val = Math.max(0, Math.min(100, stats[key]));
+                const bar = document.getElementById(`bar-${key}`);
+                const label = document.getElementById(`val-${key}`);
+                const box = document.getElementById(`stat-box-${key}`);
+                const statusEl = document.getElementById(`status-${key}`);
+
+                bar.style.height = `${val}%`;
+                label.textContent = `${val}%`;
+
+                if (statusEl) {
+                    const text = val <= 25 ? statusTexts[key].low : (val >= 65 ? statusTexts[key].high : statusTexts[key].mid);
+                    statusEl.textContent = text;
+                    statusEl.className = val <= 25 ? 'text-[10px] font-bold text-rose-500 hidden lg:inline' : 'text-[10px] text-stone-400 hidden lg:inline';
+                }
+
+                // Alerta visual si un pilar está en riesgo crítico (<= 20%)
+                if (val <= 20) {
+                    box.classList.add('danger-pulse', 'border-rose-500');
+                    label.classList.add('text-rose-500', 'font-black');
+                } else {
+                    box.classList.remove('danger-pulse', 'border-rose-500');
+                    label.classList.remove('text-rose-500', 'font-black');
+                }
+            });
+
+            // Actualizar contadores de poderes
+            powerPollCount.textContent = powers.pollCount;
+            powerFundCount.textContent = powers.fundCount;
+            powerPactCount.textContent = powers.pactCount;
+            powerPollBtn.classList.toggle('opacity-50', powers.pollCount <= 0);
+            powerFundBtn.classList.toggle('opacity-50', powers.fundCount <= 0);
+            powerPactBtn.classList.toggle('opacity-50', powers.pactCount <= 0);
+
+            // Fecha calculada de 2026 a 2030
+            const year = 2026 + Math.floor(currentTurn / 4);
+            const month = months[currentTurn % 4] || "Ene";
+            document.getElementById('date-display').textContent = currentTurn >= totalTurns ? "Dic 2030" : `${month} ${year}`;
+            document.getElementById('turn-counter').textContent = `Decisión ${Math.min(currentTurn + 1, totalTurns)} / ${totalTurns}`;
+            
+            const progressPercent = Math.min(100, ((currentTurn) / totalTurns) * 100);
+            document.getElementById('year-progress').style.width = `${Math.max(6, progressPercent)}%`;
+
+            // Actualizar promedio general en PC
+            const avgVal = document.getElementById('desktop-avg-val');
+            if (avgVal) {
+                const avg = Math.round((stats.economy + stats.society + stats.environment + stats.budget) / 4);
+                avgVal.textContent = `${avg}%`;
+            }
+
+            renderDesktopSdgChips();
+        }
+
+        // Mostrar Puntos de Impacto sobre los Pilares (Con soporte de Modo Asesor y Consulta Ciudadana)
+        function previewImpact(direction) {
+            const card = CARDS_DECK[currentTurn];
+            if (!card) return;
+
+            let effects = null;
+            if (direction === 'left') effects = card.left.effects;
+            else if (direction === 'center') effects = card.center.effects;
+            else if (direction === 'right') effects = card.right.effects;
+
+            const keys = ['economy', 'society', 'environment', 'budget'];
+
+            keys.forEach(key => {
+                const dot = document.getElementById(`dot-${key}`);
+                dot.textContent = '';
+                dot.className = 'impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-md flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white';
+
+                if (effects && effects[key] !== 0) {
+                    let diff = effects[key];
+                    if (key === 'budget' && isPactActive && diff < 0) {
+                        diff = 0; // Pacto público-privado neutraliza la pérdida de presupuesto
+                    }
+
+                    const isPositive = diff > 0;
+
+                    if (advisorMode || isPollActiveForCurrentTurn) {
+                        if (isPollActiveForCurrentTurn) {
+                            // En modo Consulta Ciudadana se muestran los números exactos
+                            dot.textContent = (diff > 0 ? `+${diff}` : `${diff}`);
+                            dot.style.fontSize = '6px';
+                            dot.style.width = '16px';
+                            dot.style.borderRadius = '6px';
+                        } else {
+                            dot.textContent = isPositive ? '+' : '−';
+                        }
+
+                        if (isPositive) {
+                            dot.classList.add('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
+                        } else if (diff === 0) {
+                            dot.classList.add('bg-sky-500', 'shadow-[0_0_8px_#0ea5e9]');
+                        } else {
+                            dot.classList.add('bg-rose-500', 'shadow-[0_0_8px_#f43f5e]');
+                        }
+                    } else {
+                        dot.classList.add('bg-amber-400', 'shadow-[0_0_8px_#fbbf24]');
+                    }
+
+                    if (Math.abs(diff) >= 20) {
+                        dot.classList.add('active-large');
+                    } else {
+                        dot.classList.add('active-small');
+                    }
+                }
+            });
+        }
+
+        // Renderizar la Tarjeta Actual en el Mazo con sus 3 Opciones
+        function renderCurrentCard() {
+            const card = CARDS_DECK[currentTurn];
+            if (!card) return;
+
+            const badge = document.getElementById('sdg-badge');
+            badge.style.backgroundColor = card.sdgColor;
+            badge.style.color = card.textColor;
+            badge.innerHTML = `<i class="fa-solid ${card.icon}"></i><span class="truncate max-w-[200px] sm:max-w-xs">${card.sdg}</span>`;
+
+            document.getElementById('card-index-indicator').textContent = `${currentTurn + 1} / ${totalTurns}`;
+            document.getElementById('char-emoji').textContent = card.emoji;
+            document.getElementById('char-name').textContent = card.character;
+            document.getElementById('char-role').textContent = card.role;
+            document.getElementById('card-dilemma').textContent = card.dilemma;
+
+            // Textos de los 3 botones
+            document.getElementById('btn-left-text').textContent = card.left.text;
+            document.getElementById('btn-center-text').textContent = card.center.text;
+            document.getElementById('btn-right-text').textContent = card.right.text;
+
+            swipeBadgeLeft.textContent = card.left.text;
+            swipeBadgeRight.textContent = card.right.text;
+            swipeBadgeUp.textContent = `✨ ${card.center.text}`;
+
+            // Resetear estado de poderes para el nuevo turno
+            isPollActiveForCurrentTurn = false;
+
+            // Actualizar Panel Derecho en PC
+            const desktopTitle = document.getElementById('desktop-sdg-title');
+            if (desktopTitle) {
+                desktopTitle.textContent = card.sdg;
+                document.getElementById('desktop-sdg-fact').textContent = card.fact;
+                const iconBox = document.getElementById('desktop-sdg-icon-box');
+                iconBox.style.backgroundColor = card.sdgColor;
+                document.getElementById('desktop-sdg-icon').className = `fa-solid ${card.icon}`;
+            }
+
+            // Restablecer estilos de la tarjeta activa
+            activeCard.className = 'decision-card w-full min-h-[340px] sm:min-h-[370px] lg:min-h-[395px] bg-white dark:bg-stone-900 border-2 border-stone-200/90 dark:border-stone-700/80 rounded-[2.5rem] p-4 sm:p-5 flex flex-col justify-between shadow-xl shadow-stone-900/10 relative overflow-hidden cursor-grab transition-colors';
+            activeCard.style.transform = '';
+            swipeBadgeLeft.style.opacity = '0';
+            swipeBadgeRight.style.opacity = '0';
+            swipeBadgeUp.style.opacity = '0';
+            previewImpact(null);
+        }
+
+        // Registrar Decisión en la Bitácora
+        function logDecision(card, direction, choice) {
+            const year = 2026 + Math.floor(currentTurn / 4);
+            const month = months[currentTurn % 4] || "Ene";
+            const dirLabel = direction === 'left' ? 'Opción A' : (direction === 'center' ? '3ª Vía (Opción C)' : 'Opción B');
+            
+            decisionHistory.push({
+                turn: currentTurn + 1,
+                date: `${month} ${year}`,
+                sdg: card.sdg,
+                sdgColor: card.sdgColor,
+                icon: card.icon,
+                character: card.character,
+                choiceTitle: choice.text,
+                direction: dirLabel,
+                effects: { ...choice.effects },
+                reaction: choice.reaction,
+                fact: card.fact
+            });
+            updateLogModalContent();
+            updateDesktopRecentList();
+        }
+
+        // Actualizar Lista Reciente en el Panel Lateral de PC
+        function updateDesktopRecentList() {
+            const recentList = document.getElementById('desktop-recent-list');
+            if (!recentList) return;
+
+            const recent = decisionHistory.slice(-3).reverse();
+            if (recent.length === 0) {
+                recentList.innerHTML = `
+                    <div class="py-3 text-center text-stone-400 text-xs">
+                        <i class="fa-regular fa-folder-open text-xl mb-1 block"></i>
+                        Esperando primer decreto...
+                    </div>`;
+                return;
+            }
+
+            recentList.innerHTML = recent.map(entry => `
+                <div class="p-2 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 flex flex-col gap-0.5 transition-all">
+                    <div class="flex items-center justify-between text-[10px]">
+                        <span class="font-bold truncate max-w-[150px] text-stone-500">${entry.date} • ${entry.direction}</span>
+                        <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${entry.sdgColor};" title="${entry.sdg}"></span>
+                    </div>
+                    <span class="font-bold text-stone-800 dark:text-stone-100 truncate">${entry.choiceTitle}</span>
+                    <span class="text-[9px] italic text-stone-500 truncate">"${entry.reaction}"</span>
+                </div>
+            `).join('');
+        }
+
+        // Actualizar Contenido del Modal de Bitácora
+        function updateLogModalContent() {
+            logCount.textContent = `${decisionHistory.length} decisiones registradas`;
+            if (decisionHistory.length === 0) {
+                logList.innerHTML = `
+                    <div class="py-8 text-center text-stone-400">
+                        <i class="fa-solid fa-scroll text-3xl mb-2"></i>
+                        <p>Aún no se han firmado decretos en este mandato.</p>
+                    </div>`;
+                return;
+            }
+
+            logList.innerHTML = decisionHistory.map(entry => `
+                <div class="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 flex flex-col gap-1.5 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-xs" style="background-color: ${entry.sdgColor}">
+                            <i class="fa-solid ${entry.icon}"></i>
+                            <span class="truncate max-w-[200px]">${entry.sdg}</span>
+                        </span>
+                        <span class="text-[10px] font-bold text-stone-400">${entry.date} (${entry.direction})</span>
+                    </div>
+                    <div class="font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+                        <span>${entry.choiceTitle}</span>
+                    </div>
+                    <p class="text-[10px] italic text-stone-500 bg-stone-100 dark:bg-stone-900/60 p-1.5 rounded-lg">
+                        📰 "${entry.reaction}"
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-[10px] font-bold mt-0.5">
+                        <span class="${entry.effects.economy >= 0 ? 'text-amber-700 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}">
+                            Econ: ${entry.effects.economy > 0 ? '+' : ''}${entry.effects.economy}%
+                        </span>
+                        <span class="${entry.effects.society >= 0 ? 'text-rose-700 dark:text-rose-400' : 'text-rose-600 dark:text-rose-400'}">
+                            Soc: ${entry.effects.society > 0 ? '+' : ''}${entry.effects.society}%
+                        </span>
+                        <span class="${entry.effects.environment >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                            Amb: ${entry.effects.environment > 0 ? '+' : ''}${entry.effects.environment}%
+                        </span>
+                        <span class="${entry.effects.budget >= 0 ? 'text-sky-700 dark:text-sky-400' : 'text-rose-600 dark:text-rose-400'}">
+                            Pres: ${entry.effects.budget > 0 ? '+' : ''}${entry.effects.budget}%
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ejecutar Decisión del Jugador (Izquierda, Centro o Derecha)
+        function makeDecision(direction) {
+            if (isAnimating || currentTurn >= totalTurns) return;
+            isAnimating = true;
+
+            playSound('decision');
+            triggerHaptic(30);
+
+            const card = CARDS_DECK[currentTurn];
+            let choice = card.left;
+            let swipeClass = 'swipe-left';
+
+            if (direction === 'center') {
+                choice = card.center;
+                swipeClass = 'swipe-up';
+            } else if (direction === 'right') {
+                choice = card.right;
+                swipeClass = 'swipe-right';
+            }
+
+            // Registrar en historial
+            logDecision(card, direction, choice);
+
+            // Actualizar titular en vivo en "La Voz de la Calle"
+            newsTickerText.textContent = `"${choice.reaction}"`;
+
+            // Animación de salida física
+            activeCard.classList.add(swipeClass);
+            previewImpact(null);
+
+            // Calcular efectos con el modificador de pacto si estaba activo
+            let budgetDiff = choice.effects.budget;
+            if (isPactActive && budgetDiff < 0) {
+                budgetDiff = 0;
+                isPactActive = false; // El pacto se consume
+            }
+
+            // Actualizar estadísticas con límites de 0 a 100
+            stats.economy = Math.max(0, Math.min(100, stats.economy + choice.effects.economy));
+            stats.society = Math.max(0, Math.min(100, stats.society + choice.effects.society));
+            stats.environment = Math.max(0, Math.min(100, stats.environment + choice.effects.environment));
+            stats.budget = Math.max(0, Math.min(100, stats.budget + budgetDiff));
+
+            setTimeout(() => {
+                const failedPillar = checkGameOver();
+                if (failedPillar) {
+                    updateStatsUI();
+                    playSound('gameover');
+                    showEndModal(false, failedPillar, card.fact);
+                    isAnimating = false;
+                    return;
+                }
+
+                currentTurn++;
+                updateStatsUI();
+
+                // Victoria: Se completaron los 17 ODS alcanzando el año 2030
+                if (currentTurn >= totalTurns) {
+                    playSound('victory');
+                    showEndModal(true, null, card.fact);
+                    isAnimating = false;
+                    return;
+                }
+
+                renderCurrentCard();
+                isAnimating = false;
+            }, 320);
+        }
+
+        // Evaluar si algún pilar colapsó a cero
+        function checkGameOver() {
+            if (stats.economy <= 0) return {
+                title: "¡Colapso Económico!",
+                emoji: "📉",
+                desc: "La economía de la ciudad tocó el 0%. El cierre masivo de pequeñas empresas provocó un paro general antes del año 2030."
+            };
+            if (stats.society <= 0) return {
+                title: "¡Crisis y Protesta Social!",
+                emoji: "🪧",
+                desc: "El bienestar social cayó a 0%. La falta de equidad y servicios esenciales obligó a disolver el concejo municipal."
+            };
+            if (stats.environment <= 0) return {
+                title: "¡Colapso Ecológico!",
+                emoji: "☣️",
+                desc: "El indicador ambiental llegó a 0%. Los niveles de polución en agua y aire declararon a la ciudad en emergencia sanitaria irrevocable."
+            };
+            if (stats.budget <= 0) return {
+                title: "¡Bancarrota Municipal!",
+                emoji: "🏦",
+                desc: "Las arcas municipales llegaron a 0%. Sin liquidez para salarios públicos ni recolección de residuos, la alcaldía fue intervenida."
+            };
+            return null;
+        }
+
+        // Determinar Arquetipo del Alcalde según sus estadísticas finales
+        function calculateMayorArchetype() {
+            const { economy, society, environment, budget } = stats;
+            if (environment >= 65 && society >= 60) return "Líder de la Transición Ecosocial";
+            if (environment >= 70) return "Alcalde Guardián de la Naturaleza";
+            if (economy >= 70 && budget >= 60) return "Estratega de la Prosperidad Circular";
+            if (society >= 70) return "Defensor de la Equidad Ciudadana";
+            return "Alcalde del Equilibrio Sostenible";
+        }
+
+        // Mostrar Modal de Fin de Juego (Victoria o Derrota)
+        function showEndModal(isVictory, failureData, lastFact) {
+            const emojiEl = document.getElementById('modal-emoji');
+            const badgeEl = document.getElementById('modal-badge');
+            const titleEl = document.getElementById('modal-title');
+            const descEl = document.getElementById('modal-desc');
+            const factTitleEl = document.getElementById('modal-fact-title');
+            const factTextEl = document.getElementById('modal-fact-text');
+
+            if (isVictory) {
+                const avg = Math.round((stats.economy + stats.society + stats.environment + stats.budget) / 4);
+                const archetype = calculateMayorArchetype();
+
+                emojiEl.textContent = "🏆";
+                badgeEl.textContent = "¡Meta 2030 Cumplida!";
+                badgeEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 mb-2";
+                titleEl.textContent = "¡Ciudad Sostenible 2030!";
+                descEl.textContent = `¡Excelente gestión! Condujiste la ciudad con éxito hasta 2030 con un Índice de Sostenibilidad Global del ${avg}%. Tu perfil oficial es: "${archetype}".`;
+                factTitleEl.textContent = "Balance General de Mandato";
+                factTextEl.innerHTML = `
+                    <div class="space-y-1">
+                        <div>🌾 <strong>Economía:</strong> ${stats.economy}%</div>
+                        <div>👥 <strong>Sociedad:</strong> ${stats.society}%</div>
+                        <div>🌿 <strong>Ambiente:</strong> ${stats.environment}%</div>
+                        <div>🪙 <strong>Presupuesto:</strong> ${stats.budget}%</div>
+                    </div>`;
+                modalActionBtn.textContent = "Comenzar Nuevo Mandato";
+
+                modalShareBtn.classList.remove('hidden');
+                modalShareBtn.onclick = () => {
+                    const text = `🌱 ¡Logré conducir mi ciudad hasta 2030 en el Simulador ODS (3 Vías)!\n🏆 Índice de Sostenibilidad: ${avg}%\n🏛️ Título: ${archetype}\nEcon: ${stats.economy}% | Soc: ${stats.society}% | Amb: ${stats.environment}% | Pres: ${stats.budget}%\n#ODS2030 #Alcaldia2030`;
+                    navigator.clipboard.writeText(text).then(() => {
+                        modalShareBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5 text-emerald-600"></i> ¡Copiado al portapapeles!';
+                        setTimeout(() => {
+                            modalShareBtn.innerHTML = '<i class="fa-regular fa-copy mr-1.5"></i> Copiar Resumen de Mandato';
+                        }, 2500);
+                    });
+                };
+            } else {
+                emojiEl.textContent = failureData.emoji;
+                badgeEl.textContent = "Fin del Mandato";
+                badgeEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700 mb-2";
+                titleEl.textContent = failureData.title;
+                descEl.textContent = failureData.desc;
+                factTitleEl.textContent = "Lección ODS de la última decisión";
+                factTextEl.textContent = lastFact;
+                modalActionBtn.textContent = "Volver a Intentar";
+                modalShareBtn.classList.add('hidden');
+            }
+
+            modalActionBtn.onclick = restartGame;
+            gameModal.classList.remove('hidden');
+        }
+
+        // Reiniciar Partida
+        function restartGame() {
+            stats = { economy: 50, society: 50, environment: 50, budget: 50 };
+            powers = { pollCount: 2, fundCount: 1, pactCount: 1 };
+            isPactActive = false;
+            isPollActiveForCurrentTurn = false;
+            currentTurn = 0;
+            decisionHistory = [];
+            newsTickerText.textContent = '"Inicia un nuevo mandato: Ciudadanos atentos a las primeras medidas."';
+            updateLogModalContent();
+            updateDesktopRecentList();
+            gameModal.classList.add('hidden');
+            updateStatsUI();
+            renderCurrentCard();
+        }
+
+        // Activación de Poderes del Alcalde
+        powerPollBtn.addEventListener('click', () => {
+            if (powers.pollCount <= 0) return;
+            powers.pollCount--;
+            isPollActiveForCurrentTurn = true;
+            playSound('power');
+            triggerHaptic(40);
+            updateStatsUI();
+            newsTickerText.textContent = '🗳️ Consulta Ciudadana activa: Se han revelado los porcentajes numéricos exactos de las 3 alternativas.';
+        });
+
+        powerFundBtn.addEventListener('click', () => {
+            if (powers.fundCount <= 0) return;
+            // Buscar el pilar más débil y rescatarlo con +25%
+            const keys = ['economy', 'society', 'environment', 'budget'];
+            let lowestKey = keys[0];
+            keys.forEach(k => {
+                if (stats[k] < stats[lowestKey]) lowestKey = k;
+            });
+
+            powers.fundCount--;
+            stats[lowestKey] = Math.min(100, stats[lowestKey] + 25);
+            playSound('power');
+            triggerHaptic(50);
+            updateStatsUI();
+            newsTickerText.textContent = `💰 Fondo Verde inyectó recursos de emergencia: +25% aplicado al pilar más crítico.`;
+        });
+
+        powerPactBtn.addEventListener('click', () => {
+            if (powers.pactCount <= 0) return;
+            powers.pactCount--;
+            isPactActive = true;
+            playSound('power');
+            triggerHaptic(40);
+            updateStatsUI();
+            newsTickerText.textContent = '🤝 Pacto Público-Privado firmado: Tu próxima decisión no tendrá costos presupuestarios.';
+        });
+
+        // Eventos para Botones de Decisión (Izquierda, Centro, Derecha)
+        btnLeft.addEventListener('mouseenter', () => previewImpact('left'));
+        btnLeft.addEventListener('mouseleave', () => previewImpact(null));
+        btnLeft.addEventListener('click', () => makeDecision('left'));
+
+        btnCenter.addEventListener('mouseenter', () => previewImpact('center'));
+        btnCenter.addEventListener('mouseleave', () => previewImpact(null));
+        btnCenter.addEventListener('click', () => makeDecision('center'));
+
+        btnRight.addEventListener('mouseenter', () => previewImpact('right'));
+        btnRight.addEventListener('mouseleave', () => previewImpact(null));
+        btnRight.addEventListener('click', () => makeDecision('right'));
+
+        // Atajos de Teclado Universales (Flechas, A/W/D, Espacio, Escape)
+        window.addEventListener('keydown', (e) => {
+            if (!gameModal.classList.contains('hidden') || !logModal.classList.contains('hidden')) {
+                if (e.key === 'Escape') {
+                    gameModal.classList.add('hidden');
+                    logModal.classList.add('hidden');
+                }
+                return;
+            }
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') makeDecision('left');
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') makeDecision('center');
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') makeDecision('right');
+        });
+
+        // Interacción Física de Arrastre / Swipe en la Tarjeta (Izquierda, Arriba, Derecha)
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        function onDragStart(clientX, clientY) {
+            if (isAnimating) return;
+            isDragging = true;
+            startX = clientX;
+            startY = clientY;
+            activeCard.classList.add('dragging');
+        }
+
+        function onDragMove(clientX, clientY) {
+            if (!isDragging) return;
+            currentX = clientX - startX;
+            currentY = clientY - startY;
+
+            // Determinar si el gesto es predominantemente vertical (hacia arriba) u horizontal
+            const isUpward = currentY < -35 && Math.abs(currentY) > Math.abs(currentX) * 1.1;
+
+            if (isUpward) {
+                // Arrastre hacia arriba (Opción C / Tercera Vía)
+                activeCard.style.transform = `translateX(${currentX * 0.3}px) translateY(${currentY}px) scale(0.97)`;
+                const opacity = Math.min(1, Math.abs(currentY) / 75);
+                swipeBadgeUp.style.opacity = opacity;
+                swipeBadgeLeft.style.opacity = 0;
+                swipeBadgeRight.style.opacity = 0;
+                previewImpact('center');
+                if (Math.abs(currentY) > 80) triggerHaptic(10);
+            } else {
+                // Arrastre horizontal estándar
+                const rotate = currentX * 0.055;
+                activeCard.style.transform = `translateX(${currentX}px) translateY(${currentY * 0.2}px) rotate(${rotate}deg)`;
+
+                const opacity = Math.min(1, Math.abs(currentX) / 85);
+                swipeBadgeUp.style.opacity = 0;
+
+                if (currentX < -25) {
+                    swipeBadgeLeft.style.opacity = opacity;
+                    swipeBadgeRight.style.opacity = 0;
+                    previewImpact('left');
+                    if (Math.abs(currentX) > 90) triggerHaptic(10);
+                } else if (currentX > 25) {
+                    swipeBadgeRight.style.opacity = opacity;
+                    swipeBadgeLeft.style.opacity = 0;
+                    previewImpact('right');
+                    if (Math.abs(currentX) > 90) triggerHaptic(10);
+                } else {
+                    swipeBadgeLeft.style.opacity = 0;
+                    swipeBadgeRight.style.opacity = 0;
+                    previewImpact(null);
+                }
+            }
+        }
+
+        function onDragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            activeCard.classList.remove('dragging');
+
+            const isUpward = currentY < -75 && Math.abs(currentY) > Math.abs(currentX);
+
+            if (isUpward) {
+                makeDecision('center');
+            } else if (currentX < -95) {
+                makeDecision('left');
+            } else if (currentX > 95) {
+                makeDecision('right');
+            } else {
+                activeCard.style.transform = '';
+                swipeBadgeLeft.style.opacity = 0;
+                swipeBadgeRight.style.opacity = 0;
+                swipeBadgeUp.style.opacity = 0;
+                previewImpact(null);
+            }
+            currentX = 0;
+            currentY = 0;
+        }
+
+        // Listeners Ratón
+        activeCard.addEventListener('mousedown', (e) => onDragStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => onDragMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', onDragEnd);
+
+        // Listeners Pantallas Táctiles Móviles
+        activeCard.addEventListener('touchstart', (e) => onDragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging) onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        window.addEventListener('touchend', onDragEnd);
+
+        // Toggle Modo Asesor
+        advisorBtn.addEventListener('click', () => {
+            advisorMode = !advisorMode;
+            advisorBtn.classList.toggle('bg-amber-100', advisorMode);
+            advisorBtn.classList.toggle('dark:bg-amber-950', advisorMode);
+            advisorBtn.classList.toggle('border-amber-400', advisorMode);
+            previewImpact(null);
+            playSound('swipe');
+        });
+
+        // Toggle Audio
+        audioBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            audioIcon.className = soundEnabled 
+                ? 'fa-solid fa-volume-high text-xs sm:text-sm text-stone-600 dark:text-stone-300' 
+                : 'fa-solid fa-volume-xmark text-xs sm:text-sm text-stone-400';
+            if (soundEnabled) playSound('decision');
+        });
+
+        // Toggle Tema (Luz Natural / Bosque Profundo)
+        themeBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            themeIcon.className = isDark ? 'fa-solid fa-sun text-xs sm:text-sm text-amber-400' : 'fa-solid fa-moon text-xs sm:text-sm';
+            playSound('swipe');
+        });
+
+        // Apertura y Cierre de la Bitácora
+        logBtn.addEventListener('click', () => {
+            updateLogModalContent();
+            logModal.classList.remove('hidden');
+            playSound('swipe');
+        });
+        closeLogBtn.addEventListener('click', () => logModal.classList.add('hidden'));
+        closeLogBottomBtn.addEventListener('click', () => logModal.classList.add('hidden'));
+
+        // Botón de Ayuda e Instrucciones
+        helpBtn.addEventListener('click', () => {
+            document.getElementById('modal-emoji').textContent = "🏛️";
+            document.getElementById('modal-badge').textContent = "Guía del Mandato Sostenible";
+            document.getElementById('modal-badge').className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 mb-2";
+            document.getElementById('modal-title').textContent = "¿Cómo gobernar con 3 Vías?";
+            document.getElementById('modal-desc').textContent = "Desliza la tarjeta hacia la izquierda (Opción A), derecha (Opción B) o hacia ARRIBA (Tercera Vía / Opción C). También puedes usar los 3 botones inferiores o las teclas A, W, D.";
+            document.getElementById('modal-fact-title').textContent = "Poderes y Equilibrio ODS";
+            document.getElementById('modal-fact-text').innerHTML = "Dispones de <strong>Consulta Ciudadana, Fondo Verde y Pacto Mixto</strong> para gestionar momentos difíciles. ¡Mantén los 4 pilares por encima de 0% hasta el 2030!";
+            modalActionBtn.textContent = "Continuar Mandato";
+            modalShareBtn.classList.add('hidden');
+            modalActionBtn.onclick = () => gameModal.classList.add('hidden');
+            gameModal.classList.remove('hidden');
+            playSound('swipe');
+        });
+
+        // Inicializar Estado al Cargar la Página
+        window.onload = () => {
+            updateStatsUI();
+            renderCurrentCard();
+            updateLogModalContent();
+            updateDesktopRecentList();
+        };
+    </script>
+</body>
+</html>
