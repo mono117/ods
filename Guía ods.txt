@@ -36,7 +36,6 @@ El proyecto cuenta con una arquitectura limpia y modular de 3 capas:
   ODS/
   ├── index.html                   -> Estructura semántica HTML5 y modales.
   ├── Guía ods.txt                 -> Este manual de usuario y funcionamiento.
-  ├── informe_tecnico_simulador_ods_2030.md -> Informe académico completo (UTEM).
   ├── css/
   │   └── styles.css               -> Estilos biofílicos, paleta natural y animaciones.
   └── js/
