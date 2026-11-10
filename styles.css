@@ -1,0 +1,154 @@
+:root {
+    --color-bg-base: #f7f6f0;
+    --color-canvas: #faf9f5;
+    --color-text-main: #202c1f;
+    --color-text-muted: #5e6d5b;
+    --color-border: #e3dec3;
+}
+
+.dark {
+    --color-bg-base: #111a14;
+    --color-canvas: #16221b;
+    --color-text-main: #eff5ee;
+    --color-text-muted: #95a894;
+    --color-border: #2c3e32;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--color-bg-base);
+    color: var(--color-text-main);
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Fondo orgánico con textura y contornos topográficos sutiles */
+.organic-background {
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(117, 153, 87, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(194, 94, 62, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.06) 0%, transparent 60%);
+}
+
+.dark .organic-background {
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(74, 107, 53, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(162, 75, 45, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(30, 48, 36, 0.4) 0%, transparent 70%);
+}
+
+/* Contenedor y perspectiva del mazo de cartas */
+.card-container {
+    perspective: 1200px;
+}
+
+.decision-card {
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease, box-shadow 0.3s ease;
+    transform-origin: 50% 115%;
+    touch-action: pan-y;
+    will-change: transform;
+}
+
+.decision-card.dragging {
+    transition: none;
+    cursor: grabbing;
+}
+
+.swipe-left {
+    transform: translateX(-160%) rotate(-25deg) !important;
+    opacity: 0 !important;
+}
+
+.swipe-right {
+    transform: translateX(160%) rotate(25deg) !important;
+    opacity: 0 !important;
+}
+
+.swipe-up {
+    transform: translateY(-160%) scale(0.85) !important;
+    opacity: 0 !important;
+}
+
+/* Sellos dinámicos de voto (Estilo documento oficial con tinta artesanal) */
+.stamp-badge {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform: rotate(-10deg) scale(0.9);
+    box-shadow: 0 8px 24px -4px rgba(0,0,0,0.2);
+}
+
+.stamp-badge-right {
+    transform: rotate(10deg) scale(0.9);
+}
+
+.stamp-badge-up {
+    transform: rotate(0deg) scale(0.9);
+}
+
+/* Indicadores de impacto sobre los pilares */
+.impact-dot {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, background-color 0.2s ease;
+    transform: scale(0);
+    opacity: 0;
+}
+
+.impact-dot.active-small {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.impact-dot.active-large {
+    transform: scale(1.35);
+    opacity: 1;
+}
+
+.stat-bar-fill {
+    transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease;
+}
+
+/* Rueda oficial de colores ODS */
+.sdg-wheel {
+    background: conic-gradient(
+        #e5243b 0deg 21deg,
+        #dda63a 21deg 42deg,
+        #4c9f38 42deg 63deg,
+        #c5192d 63deg 84deg,
+        #ff3a21 84deg 105deg,
+        #26bde2 105deg 126deg,
+        #fcc30b 126deg 147deg,
+        #a21942 147deg 168deg,
+        #fd6925 168deg 189deg,
+        #dd1367 189deg 210deg,
+        #fd9d24 210deg 231deg,
+        #bf8b2e 231deg 252deg,
+        #3f7e44 252deg 273deg,
+        #0a97d9 273deg 294deg,
+        #56c02b 294deg 315deg,
+        #00689d 315deg 336deg,
+        #19486a 336deg 360deg
+    );
+}
+
+@keyframes pulse-soft {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.danger-pulse {
+    animation: pulse-soft 1s infinite ease-in-out;
+}
+
+/* Scrollbar suave para modales y paneles */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.25);
+    border-radius: 999px;
+}

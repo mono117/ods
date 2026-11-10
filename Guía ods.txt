@@ -1,0 +1,206 @@
+================================================================================
+GUÍA OFICIAL DEL SIMULADOR: ALCALDE 2030 - DECISIONES ODS
+================================================================================
+Proyecto: Simulador Interactivo de Decisiones Urbanas Sostenibles
+Basado en: Los 17 Objetivos de Desarrollo Sostenible (Agenda 2030 - ONU)
+Versión: 2.0 (Arquitectura Modular, Biofílica y Multidispositivo)
+================================================================================
+
+1. ¿QUÉ ES EL SIMULADOR?
+--------------------------------------------------------------------------------
+"Alcalde 2030" es un simulador interactivo de gestión urbana y toma de decisiones
+basado en dinámicas de cartas (estilo Reigns / toma de decretos). El jugador asume
+el rol de la máxima autoridad municipal de una ciudad contemporánea y debe guiar
+a su comunidad desde el año 2024 hasta el año 2030, enfrentando 17 dilemas
+críticos, cada uno alineado con uno de los 17 Objetivos de Desarrollo Sostenible (ODS).
+
+El objetivo es alcanzar la meta de la Agenda 2030 equilibrando permanentemente
+cuatro pilares fundamentales de sostenibilidad sin permitir que ninguno colapse.
+
+
+2. CÓMO EJECUTAR EL PROYECTO
+--------------------------------------------------------------------------------
+No se requiere instalar Node.js, compilar código ni levantar servidores locales:
+1. Dirígete a la carpeta del proyecto.
+2. Haz doble clic en el archivo "index.html".
+3. Se abrirá automáticamente en tu navegador web preferido (Google Chrome,
+   Microsoft Edge, Mozilla Firefox, Safari u Opera).
+4. El simulador es 100% responsivo: funciona tanto en computadoras de escritorio
+   y notebooks como en teléfonos celulares y tablets.
+
+
+3. ESTRUCTURA DE ARCHIVOS DEL PROYECTO
+--------------------------------------------------------------------------------
+El proyecto cuenta con una arquitectura limpia y modular de 3 capas:
+
+  ODS/
+  ├── index.html                   -> Estructura semántica HTML5 y modales.
+  ├── Guía ods.txt                 -> Este manual de usuario y funcionamiento.
+  ├── informe_tecnico_simulador_ods_2030.md -> Informe académico completo (UTEM).
+  ├── css/
+  │   └── styles.css               -> Estilos biofílicos, paleta natural y animaciones.
+  └── js/
+      ├── cardsData.js             -> Base de datos con los 17 dilemas ODS y citas.
+      └── app.js                   -> Motor del juego, audio procedural, swipe y poderes.
+
+
+4. LOS CUATRO PILARES DE GESTIÓN MUNICIPAL
+--------------------------------------------------------------------------------
+Cada decisión que tomes altera en tiempo real los cuatro indicadores de la ciudad.
+Todos inician equilibrados al 50%:
+
+  [🌱] MEDIO AMBIENTE & CLIMA:
+       Representa la calidad del aire, la conservación de áreas verdes, la gestión
+       de residuos, el agua potable y la transición ecológica.
+
+  [👥] SOCIEDAD & BIENESTAR:
+       Mide la equidad social, el acceso a salud pública de calidad, educación,
+       inclusión social y reducción de la pobreza y el hambre.
+
+  [💰] ECONOMÍA & PRESUPUESTO:
+       Refleja las arcas municipales, la inversión en infraestructura productiva,
+       el empleo local y la sostenibilidad fiscal.
+
+  [⚖️] GOBERNANZA & CONFIANZA:
+       Mide el respaldo de la ciudadanía, la transparencia municipal, la
+       seguridad pública, la paz cívica y la legitimidad institucional.
+
+
+5. CONDICIONES DE VICTORIA Y DERROTA
+--------------------------------------------------------------------------------
+* CONDICIÓN DE DERROTA (GAME OVER INMEDIATO):
+  Si CUALQUIERA de los cuatro pilares llega al 0%, el mandato finaliza
+  abruptamente debido a una crisis terminal:
+  - Medio Ambiente en 0% -> Colapso ecológico y emergencia sanitaria.
+  - Sociedad en 0%       -> Estallido social y éxodo poblacional.
+  - Economía en 0%       -> Quiebra fiscal e intervención bancaria.
+  - Gobernanza en 0%     -> Pérdida total de legitimidad y destitución ciudadana.
+
+* CONDICIÓN DE VICTORIA (HORIZONTE 2030 ALCANZADO):
+  Llegar al final de los 17 ODS (año 2030) manteniendo los 4 pilares por encima
+  del 0%. Al concluir, recibirás una evaluación global de mandato basada en tu
+  promedio de desempeño:
+  - Rango S: Líder Visionario de la Sostenibilidad (Promedio > 75% y balance).
+  - Rango A: Estadista Pragmático y Transformador (Promedio 60% - 74%).
+  - Rango B: Mandato Resiliente de Transición (Promedio 45% - 59%).
+  - Rango C: Gestión de Crisis al Límite (Promedio < 45%).
+
+
+6. SISTEMA DE DECISIONES TRIPARTITO ("LA TERCERA VÍA")
+--------------------------------------------------------------------------------
+A diferencia de los modelos binarios clásicos (sí/no), cada dilema presenta
+TRES opciones estratégicas de política pública:
+
+  1. OPCIÓN A (Austeridad / Pragmática):
+     Solución de bajo o nulo costo municipal, orientada a mantener el presupuesto,
+     aunque con mejoras sociales o ambientales más moderadas o lentas.
+
+  2. OPCIÓN B (Transformación Verde / Estatal Profunda):
+     Medida ambiciosa de impacto estructural ecológico o social directo, pero con
+     un alto desembolso financiero o exigencias regulatorias estrictas.
+
+  3. OPCIÓN C ("Tercera Vía" - Alianza Comunitaria e Innovación Circular):
+     Enfoque de co-gestión ciudadana, cooperativas locales o tecnologías
+     circulares de costo compartido. Equilibra el impacto positivo con un
+     menor costo presupuestario.
+
+
+7. CÓMO JUGAR: CONTROLES E INTERACCIÓN
+--------------------------------------------------------------------------------
+A) EN COMPUTADORA DE ESCRITORIO O LAPTOP:
+   - Vía Botones: Haz clic en cualquiera de los 3 botones bajo la tarjeta:
+       * Botón Izquierdo: Promulgar Opción A.
+       * Botón Central:   Promulgar Opción C (Tercera Vía).
+       * Botón Derecho:   Promulgar Opción B.
+   - Vía Teclado (Atajos rápidos de productividad):
+       * Tecla [A] o Flecha [Izquierda] -> Opción A.
+       * Tecla [W] o Flecha [Arriba]    -> Opción C (Tercera Vía).
+       * Tecla [D] o Flecha [Derecha]   -> Opción B.
+   - Vía Ratón (Física de Arrastre):
+       * Arrastra la tarjeta hacia la izquierda para la Opción A.
+       * Arrastra la tarjeta hacia la derecha para la Opción B.
+       * Arrastra la tarjeta hacia arriba para la Opción C.
+
+B) EN TELÉFONOS MÓVILES Y TABLETS:
+   - Gestos táctiles nativos (Swipe horizontal y vertical).
+   - Botones táctiles optimizados para el pulgar con altura mínima de 64px.
+   - Retroalimentación háptica (vibración sutil) al interactuar.
+
+
+8. PODERES DE EMERGENCIA DEL ALCALDE
+--------------------------------------------------------------------------------
+En la parte inferior de la pantalla dispones de tres cartas de gestión especial:
+
+  [🗳️] CONSULTA CIUDADANA (2 Usos por partida):
+       Pide la opinión técnica del consejo municipal. Muestra en pantalla el
+       impacto exacto (+/-) que tendrá cada opción en los cuatro pilares antes
+       de que confirmes tu decisión.
+
+  [💰] FONDO VERDE DE EMERGENCIA (1 Uso por partida):
+       Inyecta inmediatamente un +25% al pilar que se encuentre en peor estado o
+       en nivel crítico (< 25%), salvando a la ciudad de un colapso inminente.
+
+  [🤝] PACTO PÚBLICO-PRIVADO (1 Uso por partida):
+       Crea una alianza estratégica que absorbe el costo financiero de tu
+       próxima decisión, protegiendo las arcas municipales (costo económico = 0).
+
+
+9. ELEMENTOS DE INMERSIÓN Y DETALLES DEL PANEL
+--------------------------------------------------------------------------------
+* LA VOZ DE LA CALLE (NOTICIAS EN VIVO):
+  Bajo la tarjeta activa verás un teletipo de prensa con titulares de periódicos
+  y citas textuales de vecinos, comerciantes y gremios que reaccionan a tus decretos.
+
+* RUEDA ODS Y RADAR DE PROGRESO:
+  En el panel lateral derecho (o desplegable en móvil) se iluminan las fichas de
+  los 17 ODS de la ONU a medida que los resuelves, mostrando qué metas has abordado.
+
+* BITÁCORA DE MANDATO:
+  Puedes pulsar el botón "Bitácora" en el encabezado para abrir un modal con el
+  historial completo y auditable de todas las leyes y acuerdos promulgados.
+
+* AUDIO PROCEDURAL ORGÁNICO:
+  El simulador utiliza la API de Web Audio para generar sonidos armónicos y
+  acordes procedimentales en tiempo real, sin requerir descargas de archivos mp3.
+  Puedes silenciarlo con el botón de volumen en la barra superior.
+
+* MODO LUZ NATURAL / MODO BOSQUE PROFUNDO:
+  El botón de tema permite alternar entre un diseño diurno con texturas de lino y
+  papel reciclado o un modo nocturno natural basado en tonos verde bosque profundo.
+
+
+10. LOS 17 DILEMAS MUNICIPALES INCLUIDOS
+--------------------------------------------------------------------------------
+1.  ODS 1 (Fin de la Pobreza)             -> Renta básica focalizada vs. Incubadoras.
+2.  ODS 2 (Hambre Cero)                   -> Huertos urbanos vs. Tarjeta nutricional.
+3.  ODS 3 (Salud y Bienestar)             -> Centros barriales vs. Telemedicina y deporte.
+4.  ODS 4 (Educación de Calidad)          -> Alfabetización digital vs. Aulas técnicas.
+5.  ODS 5 (Igualdad de Género)            -> Sistema municipal de cuidados compartidos.
+6.  ODS 6 (Agua Limpia y Saneamiento)     -> Detección de fugas vs. Reciclaje de aguas grises.
+7.  ODS 7 (Energía Asequible y No Contam.)-> Techos solares vecinales vs. Red distrital.
+8.  ODS 8 (Trabajo Decente y Crecimiento) -> Formalización Pyme vs. Bonos de empleo verde.
+9.  ODS 9 (Industria, Innovación e Infra) -> Corredor de bajas emisiones y micro-hubs.
+10. ODS 10 (Reducción de Desigualdades)   -> Presupuesto participativo en barrios rezagados.
+11. ODS 11 (Ciudades y Comunidades Sost.) -> Peatonalización del casco vs. Bicisendas.
+12. ODS 12 (Producción y Consumo Resp.)   -> Planta municipal de compostaje y reciclaje.
+13. ODS 13 (Acción por el Clima)          -> Plan Maestro de Arbolado Urbano Nativo.
+14. ODS 14 (Vida Submarina / Cuencas)     -> Saneamiento biológico del río comunal.
+15. ODS 15 (Vida de Ecosistemas Terrest.) -> Reserva ecológica y corredores biológicos.
+16. ODS 16 (Paz, Justicia e Instituciones)-> Portal de Datos Abiertos y Transparencia.
+17. ODS 17 (Alianzas para los Objetivos)  -> Pacto Urbano 2030 de gobernanza multi-actor.
+
+
+11. CONSEJOS ESTRATÉGICOS PARA EL JUGADOR
+--------------------------------------------------------------------------------
+1. NUNCA DEJES CAER UN PILAR AL 0%: Si ves un indicador por debajo del 25%
+   (resaltado en rojo con alerta de pulso), prioriza opciones que lo recuperen.
+2. APROVECHA LA TERCERA VÍA: La Opción C suele ser la más equilibrada cuando
+   tienes poco presupuesto pero necesitas mejorar el bienestar social o ambiental.
+3. GUARDA EL FONDO VERDE: No gastes tu Fondo Verde de Emergencia en los primeros
+   años; guárdalo para los dilemas finales (2028-2030) donde la tensión aumenta.
+4. UTILIZA LA CONSULTA CIUDADANA: En dilemas complejos donde temas equivocarte,
+   activa la Consulta para ver los números exactos antes de elegir.
+
+================================================================================
+¡Mucho éxito en tu mandato como Alcalde 2030!
+================================================================================
