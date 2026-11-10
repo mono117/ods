@@ -20,12 +20,18 @@ cuatro pilares fundamentales de sostenibilidad sin permitir que ninguno colapse.
 
 2. CÓMO EJECUTAR EL PROYECTO
 --------------------------------------------------------------------------------
-No se requiere instalar Node.js, compilar código ni levantar servidores locales:
+No se requiere instalar Node.js ni compilar, pero el navegador debe poder leer
+la carpeta completa del proyecto (el CSS y el JS viven en css/ y js/):
 1. Dirígete a la carpeta del proyecto.
 2. Haz doble clic en el archivo "index.html".
-3. Se abrirá automáticamente en tu navegador web preferido (Google Chrome,
-   Microsoft Edge, Mozilla Firefox, Safari u Opera).
-4. El simulador es 100% responsivo: funciona tanto en computadoras de escritorio
+3. Si tu navegador abre el archivo desde un visor o sandbox y no carga los
+   estilos, usa la versión autocontenida "alcaldia-2030.html" (lleva el CSS y
+   el JS embebidos), o sirve la carpeta con:
+       python3 -m http.server 8000
+   y abre http://localhost:8000
+4. Se abrirá en tu navegador web preferido (Google Chrome, Microsoft Edge,
+   Mozilla Firefox, Safari u Opera).
+5. El simulador es 100% responsivo: funciona tanto en computadoras de escritorio
    y notebooks como en teléfonos celulares y tablets.
 
 
@@ -34,10 +40,15 @@ No se requiere instalar Node.js, compilar código ni levantar servidores locales
 El proyecto cuenta con una arquitectura limpia y modular de 3 capas:
 
   ODS/
-  ├── index.html                   -> Estructura semántica HTML5 y modales.
-  ├── Guía ods.txt                 -> Este manual de usuario y funcionamiento.
+  ├── index.html                   -> Entrada modular (requiere css/ y js/).
+  ├── alcaldia-2030.html           -> Versión autocontenida para abrir un solo archivo.
+  ├── build-standalone.sh          -> Regenera la versión autocontenida.
+  ├── build.sh                     -> Genera dist/ para Cloudflare Pages.
+  ├── README.md                    -> Este manual de usuario y funcionamiento.
+  ├── PRODUCT.md                   -> Contexto de producto y restricciones.
+  ├── DESIGN.md                    -> Sistema de diseño y tokens.
   ├── css/
-  │   └── styles.css               -> Estilos biofílicos, paleta natural y animaciones.
+  │   └── styles.css               -> Señalética cívica, móvil primero y tema oscuro.
   └── js/
       ├── cardsData.js             -> Base de datos con los 17 dilemas ODS y citas.
       └── app.js                   -> Motor del juego, audio procedural, swipe y poderes.
@@ -150,9 +161,10 @@ En la parte inferior de la pantalla dispones de tres cartas de gestión especial
   Bajo la tarjeta activa verás un teletipo de prensa con titulares de periódicos
   y citas textuales de vecinos, comerciantes y gremios que reaccionan a tus decretos.
 
-* RUEDA ODS Y RADAR DE PROGRESO:
-  En el panel lateral derecho (o desplegable en móvil) se iluminan las fichas de
-  los 17 ODS de la ONU a medida que los resuelves, mostrando qué metas has abordado.
+* PROGRESO ODS:
+  En el panel de contexto (debajo del escenario en móvil) se iluminan las 17
+  fichas ODS de la ONU a medida que las resuelves, con la meta actual marcada
+  y las completadas atenuadas.
 
 * BITÁCORA DE MANDATO:
   Puedes pulsar el botón "Bitácora" en el encabezado para abrir un modal con el
@@ -163,9 +175,10 @@ En la parte inferior de la pantalla dispones de tres cartas de gestión especial
   acordes procedimentales en tiempo real, sin requerir descargas de archivos mp3.
   Puedes silenciarlo con el botón de volumen en la barra superior.
 
-* MODO LUZ NATURAL / MODO BOSQUE PROFUNDO:
-  El botón de tema permite alternar entre un diseño diurno con texturas de lino y
-  papel reciclado o un modo nocturno natural basado en tonos verde bosque profundo.
+* TEMA CLARO / OSCURO:
+  El botón de tema alterna entre la señalética de papel claro y tinta, y una
+  versión nocturna de papel oscuro con los mismos acentos de señal. No cambia
+  la estructura ni los datos, solo la polaridad de la superficie.
 
 
 10. LOS 17 DILEMAS MUNICIPALES INCLUIDOS
@@ -192,13 +205,31 @@ En la parte inferior de la pantalla dispones de tres cartas de gestión especial
 11. CONSEJOS ESTRATÉGICOS PARA EL JUGADOR
 --------------------------------------------------------------------------------
 1. NUNCA DEJES CAER UN PILAR AL 0%: Si ves un indicador por debajo del 25%
-   (resaltado en rojo con alerta de pulso), prioriza opciones que lo recuperen.
+   (resaltado en rojo), prioriza opciones que lo recuperen.
 2. APROVECHA LA TERCERA VÍA: La Opción C suele ser la más equilibrada cuando
    tienes poco presupuesto pero necesitas mejorar el bienestar social o ambiental.
 3. GUARDA EL FONDO VERDE: No gastes tu Fondo Verde de Emergencia en los primeros
    años; guárdalo para los dilemas finales (2028-2030) donde la tensión aumenta.
 4. UTILIZA LA CONSULTA CIUDADANA: En dilemas complejos donde temas equivocarte,
    activa la Consulta para ver los números exactos antes de elegir.
+
+
+12. DESPLIEGUE EN CLOUDFLARE PAGES
+--------------------------------------------------------------------------------
+El sitio es estático y no necesita runtime. El despliegue se hace desde Git:
+
+  - Build command:      sh build.sh
+  - Output directory:   dist
+  - Framework preset:   None
+  - Production branch:  main
+
+`build.sh` genera dist/ con solo index.html, css/ y js/. Los documentos de
+diseño, la bitácora de verificación y las skills locales no se publican.
+
+Cada push a main vuelve a desplegar. Para probar el resultado localmente:
+
+  sh build.sh
+  python3 -m http.server 8001 --directory dist
 
 ================================================================================
 ¡Mucho éxito en tu mandato como Alcalde 2030!

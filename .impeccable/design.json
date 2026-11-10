@@ -1,0 +1,695 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T17:28:03Z",
+  "title": "Design System: Alcaldía 2030",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Civic Ink",
+        "canonical": "#15171C",
+        "tonalRamp": [
+          "#151619",
+          "#2C2E32",
+          "#45484E",
+          "#616369",
+          "#7D8087",
+          "#9FA1A8",
+          "#C2C4C9",
+          "#E6E8EC"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#2A2E36",
+        "tonalRamp": [
+          "#14161A",
+          "#2B2E34",
+          "#434850",
+          "#5F636C",
+          "#7B808A",
+          "#9DA2AC",
+          "#C0C4CC",
+          "#E5E8EE"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "#F2F2EE",
+        "tonalRamp": [
+          "#161615",
+          "#2E2E2C",
+          "#484845",
+          "#636360",
+          "#80807D",
+          "#A2A29E",
+          "#C4C4C1",
+          "#E8E8E6"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Document White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#161616",
+          "#2E2E2E",
+          "#484848",
+          "#636363",
+          "#808080",
+          "#A1A1A1",
+          "#C4C4C4",
+          "#E8E8E8"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Recessed Paper",
+        "canonical": "#E9EAE5",
+        "tonalRamp": [
+          "#161614",
+          "#2E2E2B",
+          "#474844",
+          "#63645F",
+          "#80817C",
+          "#A1A29D",
+          "#C4C4C1",
+          "#E8E8E5"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#D6D8D2",
+        "tonalRamp": [
+          "#161614",
+          "#2D2E2B",
+          "#474843",
+          "#62645F",
+          "#7F817C",
+          "#A0A29D",
+          "#C3C5C0",
+          "#E7E8E5"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#B9BDB4",
+        "tonalRamp": [
+          "#151713",
+          "#2C2F29",
+          "#464941",
+          "#61655D",
+          "#7E8279",
+          "#9FA39A",
+          "#C2C5BE",
+          "#E6E9E4"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#5B6159",
+        "tonalRamp": [
+          "#141713",
+          "#2B2F2A",
+          "#444A42",
+          "#5F655D",
+          "#7C827A",
+          "#9DA49B",
+          "#C1C6BF",
+          "#E5E9E4"
+        ]
+      },
+      "muted-2": {
+        "role": "neutral",
+        "displayName": "Quiet Slate",
+        "canonical": "#6B7169",
+        "tonalRamp": [
+          "#141713",
+          "#2B2F2A",
+          "#444A42",
+          "#5F655D",
+          "#7C827A",
+          "#9DA49B",
+          "#C1C6BF",
+          "#E5E9E4"
+        ]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "Warm Newsprint",
+        "canonical": "#F4F4F0",
+        "tonalRamp": [
+          "#161615",
+          "#2E2E2C",
+          "#484845",
+          "#636360",
+          "#80807D",
+          "#A2A29E",
+          "#C4C4C1",
+          "#E8E8E6"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal Orange",
+        "canonical": "#C13D19",
+        "tonalRamp": [
+          "#360000",
+          "#620000",
+          "#8E0000",
+          "#B02C00",
+          "#D34E2C",
+          "#FA7250",
+          "#FFA489",
+          "#FFD2BC"
+        ]
+      },
+      "signal-hover": {
+        "role": "primary",
+        "displayName": "Signal Deep",
+        "canonical": "#A93416",
+        "tonalRamp": [
+          "#340000",
+          "#5E0000",
+          "#890E00",
+          "#AA3517",
+          "#CD5539",
+          "#F3785A",
+          "#FFA890",
+          "#FFD4C1"
+        ]
+      },
+      "signal-line": {
+        "role": "primary",
+        "displayName": "Route Signal",
+        "canonical": "#D9471F",
+        "tonalRamp": [
+          "#380000",
+          "#650000",
+          "#930000",
+          "#B62100",
+          "#D9471F",
+          "#FF6C46",
+          "#FFA183",
+          "#FFCFB8"
+        ]
+      },
+      "signal-on-ink": {
+        "role": "primary",
+        "displayName": "Signal on Ink",
+        "canonical": "#F06A42",
+        "tonalRamp": [
+          "#360000",
+          "#610000",
+          "#8E0000",
+          "#B02D00",
+          "#D34F26",
+          "#FA734B",
+          "#FFA586",
+          "#FFD2BA"
+        ]
+      },
+      "pillar-eco": {
+        "role": "secondary",
+        "displayName": "Ocre Economía",
+        "canonical": "#B8871F",
+        "tonalRamp": [
+          "#261000",
+          "#472500",
+          "#693C00",
+          "#885900",
+          "#A77600",
+          "#CA9836",
+          "#E4BE7C",
+          "#FFE4B4"
+        ]
+      },
+      "pillar-soc": {
+        "role": "secondary",
+        "displayName": "Ladrillo Sociedad",
+        "canonical": "#B0473A",
+        "tonalRamp": [
+          "#310201",
+          "#590A05",
+          "#831B12",
+          "#A43C30",
+          "#C65B4C",
+          "#EC7D6D",
+          "#FFAA9C",
+          "#FFD5CA"
+        ]
+      },
+      "pillar-env": {
+        "role": "secondary",
+        "displayName": "Verde Ambiente",
+        "canonical": "#2F6B4F",
+        "tonalRamp": [
+          "#011C10",
+          "#053723",
+          "#15543A",
+          "#357155",
+          "#538F71",
+          "#74B192",
+          "#A3D0B8",
+          "#D0F1DF"
+        ]
+      },
+      "pillar-bud": {
+        "role": "secondary",
+        "displayName": "Azul Presupuesto",
+        "canonical": "#2B5F8A",
+        "tonalRamp": [
+          "#01172B",
+          "#06304F",
+          "#154B75",
+          "#346893",
+          "#5185B3",
+          "#72A7D6",
+          "#A1C9EE",
+          "#CEECFF"
+        ]
+      },
+      "path-a": {
+        "role": "tertiary",
+        "displayName": "Austerity Red",
+        "canonical": "#A23B2A",
+        "tonalRamp": [
+          "#310200",
+          "#590A01",
+          "#831C0C",
+          "#A43D2C",
+          "#C65B48",
+          "#EC7D69",
+          "#FFAB9A",
+          "#FFD6C8"
+        ]
+      },
+      "path-c": {
+        "role": "tertiary",
+        "displayName": "Third-Way Ochre",
+        "canonical": "#8A6412",
+        "tonalRamp": [
+          "#231200",
+          "#432700",
+          "#644000",
+          "#815C01",
+          "#A0792E",
+          "#C39A52",
+          "#DEBF8B",
+          "#FCE5BE"
+        ]
+      },
+      "critical": {
+        "role": "state",
+        "displayName": "Critical Red",
+        "canonical": "#B3261E",
+        "tonalRamp": [
+          "#370000",
+          "#630000",
+          "#900000",
+          "#B3251E",
+          "#D64A3D",
+          "#FD6E5E",
+          "#FFA192",
+          "#FFCFC3"
+        ]
+      },
+      "ok": {
+        "role": "state",
+        "displayName": "Success Green",
+        "canonical": "#2F6B4F",
+        "tonalRamp": [
+          "#011C10",
+          "#053723",
+          "#15543A",
+          "#357155",
+          "#538F71",
+          "#74B192",
+          "#A3D0B8",
+          "#D0F1DF"
+        ]
+      },
+      "on-ink-muted": {
+        "role": "neutral",
+        "displayName": "On-Ink Muted",
+        "canonical": "#AEB3AA",
+        "tonalRamp": [
+          "#313230",
+          "#545652",
+          "#737670",
+          "#8F938B",
+          "#AEB3AA",
+          "#C6CAC4",
+          "#DBDEDA",
+          "#EFF0EE"
+        ]
+      },
+      "signal-ink": {
+        "role": "primary",
+        "displayName": "Signal Ink",
+        "canonical": "#B93A1B",
+        "tonalRamp": [
+          "#341008",
+          "#591C0D",
+          "#7A2612",
+          "#983016",
+          "#B93A1B",
+          "#CE755F",
+          "#E0A89B",
+          "#F1D8D1"
+        ]
+      },
+      "pillar-eco-ink": {
+        "role": "secondary",
+        "displayName": "Ocre Ink",
+        "canonical": "#7A5A10",
+        "tonalRamp": [
+          "#221904",
+          "#3B2B08",
+          "#513B0B",
+          "#644A0D",
+          "#7A5A10",
+          "#A28C58",
+          "#C4B696",
+          "#E4DECF"
+        ]
+      },
+      "pillar-soc-ink": {
+        "role": "secondary",
+        "displayName": "Ladrillo Ink",
+        "canonical": "#8E2F24",
+        "tonalRamp": [
+          "#280D0A",
+          "#441711",
+          "#5E1F18",
+          "#74271E",
+          "#8E2F24",
+          "#B06D66",
+          "#CDA39F",
+          "#E8D5D3"
+        ]
+      },
+      "pillar-env-ink": {
+        "role": "secondary",
+        "displayName": "Verde Ink",
+        "canonical": "#2A6047",
+        "tonalRamp": [
+          "#0C1B14",
+          "#142E22",
+          "#1C3F2F",
+          "#224F3A",
+          "#2A6047",
+          "#6A907E",
+          "#A1B9AE",
+          "#D4DFDA"
+        ]
+      },
+      "pillar-bud-ink": {
+        "role": "secondary",
+        "displayName": "Azul Ink",
+        "canonical": "#245273",
+        "tonalRamp": [
+          "#0A1720",
+          "#112737",
+          "#18364C",
+          "#1E435E",
+          "#245273",
+          "#66869D",
+          "#9FB3C1",
+          "#D3DCE3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "brand": {
+        "displayName": "Brand",
+        "purpose": "Wordmark only; never reused as a headline scale."
+      },
+      "modal-title": {
+        "displayName": "Modal Title",
+        "purpose": "Welcome, defeat, and victory headlines."
+      },
+      "context-title": {
+        "displayName": "Context Title",
+        "purpose": "SDG name in the side panel."
+      },
+      "dilemma": {
+        "displayName": "Dilemma",
+        "purpose": "The decision question; 17px, 19px from 980px."
+      },
+      "character-name": {
+        "displayName": "Character Name",
+        "purpose": "Named speaker above the role line."
+      },
+      "option-text": {
+        "displayName": "Option Text",
+        "purpose": "The three A / C / B choice labels."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Facts, descriptions, press copy, and log quotes."
+      },
+      "micro": {
+        "displayName": "Micro Label",
+        "purpose": "Field names, tags, dates, keycaps, route header."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Pillar percentages and counters; tabular numerals."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(.2, .7, .2, 1)",
+        "purpose": "Card entry, swipe return, meter and route width."
+      },
+      {
+        "name": "duration-press",
+        "value": "0.1s",
+        "purpose": "The 1px press displacement on buttons and choices."
+      },
+      {
+        "name": "duration-fast",
+        "value": "0.15s",
+        "purpose": "Hover borders, background fills, badge opacity."
+      },
+      {
+        "name": "duration-base",
+        "value": "0.35s",
+        "purpose": "Card entry and swipe exit."
+      },
+      {
+        "name": "duration-progress",
+        "value": "0.45s",
+        "purpose": "Pillar fill and mandate progress width."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "640px",
+        "purpose": "Log entry becomes a row; tag caps at 68%."
+      },
+      {
+        "name": "three-up",
+        "value": "700px",
+        "purpose": "A / C / B fan into three columns; context splits in two."
+      },
+      {
+        "name": "rail",
+        "value": "980px",
+        "purpose": "280px vertical pillar rail; modal centers."
+      },
+      {
+        "name": "three-column",
+        "value": "1200px",
+        "purpose": "320px context column; sticky chrome; shortcuts appear."
+      },
+      {
+        "name": "wide",
+        "value": "1440px",
+        "purpose": "Outer padding grows to 20px; columns stay fixed."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The signal plate for the single next action, used once per view.",
+      "html": "<button class=\"ds-btn ds-btn--primary\" type=\"button\">Comenzar mandato</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:12px 16px;border:1px solid transparent;border-radius:var(--radius,2px);font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:14px;font-weight:700;letter-spacing:.03em;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,transform .1s ease}.ds-btn:focus-visible{outline:2px solid var(--signal,#C13D19);outline-offset:2px}.ds-btn:active{transform:translateY(1px)}.ds-btn--primary{background:var(--signal,#C13D19);color:#fff}.ds-btn--primary:hover{background:var(--signal-hover,#A93416)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The secondary plate: transparent fill, 1px strong border, ink text.",
+      "html": "<button class=\"ds-btn ds-btn--ghost\" type=\"button\">Cerrar</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:12px 16px;border:1px solid transparent;border-radius:var(--radius,2px);font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:14px;font-weight:700;letter-spacing:.03em;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,transform .1s ease}.ds-btn:focus-visible{outline:2px solid var(--signal,#C13D19);outline-offset:2px}.ds-btn:active{transform:translateY(1px)}.ds-btn--ghost{background:transparent;border-color:var(--line-strong,#B9BDB4);color:var(--text,#15171C)}.ds-btn--ghost:hover{background:var(--surface-2,#E9EAE5);border-color:var(--ink,#15171C)}"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "44px square sign with ink, inverse, and primary variants; inline SVG, no icon font.",
+      "html": "<div class=\"ds-icon-row\"><button class=\"ds-icon-btn\" type=\"button\" aria-label=\"Abrir bitácora\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3h12v18l-6-4-6 4V3Z\"/></svg></button><button class=\"ds-icon-btn ds-icon-btn--inverse\" type=\"button\" aria-label=\"Cambiar tema\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/></svg></button><button class=\"ds-icon-btn ds-icon-btn--primary\" type=\"button\" aria-label=\"Abrir ayuda\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.8 9a2.4 2.4 0 1 1 3.6 2.1c-.9.6-1.4 1.1-1.4 2.4\"/><path d=\"M12 17h.01\"/></svg></button></div>",
+      "css": ".ds-icon-row{display:flex;gap:6px;padding:10px;background:var(--ink,#15171C);border-radius:var(--radius,2px)}.ds-icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;background:var(--surface,#FFFFFF);color:var(--text,#15171C);border:1px solid var(--line,#D6D8D2);border-radius:var(--radius,2px);cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}.ds-icon-btn:hover{border-color:var(--ink,#15171C)}.ds-icon-btn:focus-visible{outline:2px solid var(--signal,#C13D19);outline-offset:2px}.ds-icon-btn--inverse{background:transparent;border-color:rgba(244,244,240,.22);color:#F4F4F0}.ds-icon-btn--inverse:hover{background:rgba(244,244,240,.08);border-color:rgba(244,244,240,.5)}.ds-icon-btn--primary{background:var(--signal,#C13D19);border-color:var(--signal,#C13D19);color:#fff}.ds-icon-btn--primary:hover{background:var(--signal-hover,#A93416);border-color:var(--signal-hover,#A93416)}"
+    },
+    {
+      "name": "Choice Plate (Opción A)",
+      "kind": "custom",
+      "refersTo": "choice-a",
+      "description": "Full-width three-path row with a 30px letter plate, meta label, and trailing hint.",
+      "html": "<button class=\"ds-choice ds-choice--a\" type=\"button\"><span class=\"ds-choice__key\" aria-hidden=\"true\">A</span><span class=\"ds-choice__content\"><span class=\"ds-choice__meta\">Opción A</span><span class=\"ds-choice__text\">Priorizar austeridad fiscal</span></span><span class=\"ds-choice__hint\" aria-hidden=\"true\">←</span></button>",
+      "css": ".ds-choice{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 12px;background:var(--surface,#FFFFFF);border:1px solid var(--line,#D6D8D2);border-radius:var(--radius,2px);text-align:left;cursor:pointer;font-family:var(--font-sans,\"Archivo\",system-ui,sans-serif);color:var(--text,#15171C);transition:background-color .15s ease,border-color .15s ease,transform .1s ease}.ds-choice--a{--choice:var(--a,#A23B2A);--choice-ink:var(--a-ink,#8E2F24)}.ds-choice:hover{background:var(--surface-2,#E9EAE5);border-color:var(--ink,#15171C)}.ds-choice:active{transform:translateY(1px)}.ds-choice:focus-visible{outline:2px solid var(--signal,#C13D19);outline-offset:2px}.ds-choice__key{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;background:var(--choice);color:#fff;border-radius:var(--radius,2px);font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:15px;font-weight:700;line-height:1}.ds-choice__content{display:flex;flex-direction:column;gap:1px;min-width:0}.ds-choice__meta{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--choice-ink)}.ds-choice__text{font-size:14px;font-weight:600;line-height:1.3}.ds-choice__hint{font-size:10px;color:var(--muted-2,#6B7169)}"
+    },
+    {
+      "name": "Pillar Meter",
+      "kind": "custom",
+      "description": "A 4px track, tabular 26px numeral, status word, and one impact dot per pillar.",
+      "html": "<div class=\"ds-pillar\"><div class=\"ds-pillar__top\"><span class=\"ds-pillar__name\">Economía</span><span class=\"ds-dot\">+10</span></div><span class=\"ds-pillar__value\">62%</span><span class=\"ds-pillar__status\">Estable</span><div class=\"ds-meter\"><div class=\"ds-meter__fill\" style=\"width:62%\"></div></div></div>",
+      "css": ".ds-pillar{--pillar:var(--eco,#B8871F);--pillar-ink:var(--eco-ink,#7A5A10);position:relative;display:flex;flex-direction:column;max-width:180px;font-family:var(--font-sans,\"Archivo\",system-ui,sans-serif);color:var(--text,#15171C)}.ds-pillar__top{display:flex;justify-content:space-between;align-items:flex-start;min-height:18px}.ds-pillar__name{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted,#5B6159);padding-right:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-dot{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 3px;border-radius:var(--radius,2px);background:var(--ok,#2F6B4F);color:#fff;font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}.ds-pillar__value{margin-top:2px;font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:26px;font-weight:700;line-height:1;letter-spacing:-.01em;color:var(--pillar-ink);font-variant-numeric:tabular-nums}.ds-pillar__status{font-size:11px;font-weight:500;line-height:1.3;color:var(--muted-2,#6B7169)}.ds-meter{height:4px;margin-top:7px;background:var(--surface-2,#E9EAE5);overflow:hidden}.ds-meter__fill{height:100%;width:62%;background:var(--pillar);transition:width .45s var(--ease,cubic-bezier(.2,.7,.2,1))}"
+    },
+    {
+      "name": "SDG Tag",
+      "kind": "chip",
+      "description": "A per-record colored ODS plate; global palette never overrides the goal color.",
+      "html": "<span class=\"ds-sdg\" style=\"--sdg:#FCC30B;--sdg-ink:#0F172A\">ODS 7: Energía Asequible y No Contaminante</span>",
+      "css": ".ds-sdg{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:5px 8px;border-radius:var(--radius,2px);background:var(--sdg,#FCC30B);color:var(--sdg-ink,#0F172A);font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1.3}"
+    },
+    {
+      "name": "Log Entry",
+      "kind": "card",
+      "description": "One decree in the mandate log: tag, date, choice, quote, and signed effects.",
+      "html": "<div class=\"ds-log\"><div class=\"ds-log__head\"><span class=\"ds-log__tag\" style=\"--tag-bg:#2F6B4F\">ODS 13: Acción por el Clima</span><span class=\"ds-log__date\">Mar 2028</span></div><div class=\"ds-log__choice\"><span class=\"ds-log__check\">✓</span> Fondo verde de emergencia</div><p class=\"ds-log__quote\">\"La ciudad respira: el pilar ambiental se recupera tras la intervención.\"</p><div class=\"ds-log__effects\"><span class=\"ds-up\">+25 ambiente</span><span class=\"ds-down\">-3 presupuesto</span></div></div>",
+      "css": ".ds-log{max-width:520px;padding:12px 0;border-top:1px solid var(--line,#D6D8D2);font-family:var(--font-sans,\"Archivo\",system-ui,sans-serif);color:var(--text,#15171C)}.ds-log__head{display:flex;align-items:center;justify-content:space-between;gap:10px}.ds-log__tag{display:inline-flex;align-items:center;gap:6px;max-width:68%;padding:3px 6px;border-radius:var(--radius,2px);background:var(--tag-bg,#2F6B4F);color:#fff;font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:700;letter-spacing:.02em;line-height:1.3}.ds-log__date{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted,#5B6159);white-space:nowrap}.ds-log__choice{display:flex;align-items:baseline;gap:6px;margin-top:6px;font-size:13px;font-weight:600;line-height:1.35}.ds-log__check{color:var(--ok,#2F6B4F);font-size:11px}.ds-log__quote{margin:6px 0 0;padding-top:6px;border-top:1px dotted var(--line,#D6D8D2);font-size:12px;line-height:1.5;color:var(--muted,#5B6159)}.ds-log__effects{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:6px;font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}.ds-up{color:var(--ok,#2F6B4F)}.ds-down{color:var(--critical,#B3261E)}"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The base working surface: white plate, 1px border, head rule, no shadow.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel__head\"><h2 class=\"ds-panel__title\">Pilares</h2><span class=\"ds-panel__meta\">Equilibrio <strong>50%</strong></span></div><p class=\"ds-panel__body\">Cuatro medidores en tensión. Ninguno puede llegar a 0%.</p></section>",
+      "css": ".ds-panel{background:var(--surface,#FFFFFF);border:1px solid var(--line,#D6D8D2);border-radius:var(--radius,2px);padding:14px;color:var(--text,#15171C);font-family:var(--font-sans,\"Archivo\",system-ui,sans-serif)}.ds-panel__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--line,#D6D8D2)}.ds-panel__title{margin:0;font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.ds-panel__meta{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:12px;color:var(--muted,#5B6159);white-space:nowrap}.ds-panel__meta strong{color:var(--text,#15171C);font-weight:700;font-variant-numeric:tabular-nums}.ds-panel__body{margin:0;font-size:13px;line-height:1.55;color:var(--muted,#5B6159)}"
+    },
+    {
+      "name": "Decision Card (Expediente)",
+      "kind": "card",
+      "description": "The dilemma dossier, with the 5px deck ghost, SDG tag, character, and swipe foot.",
+      "html": "<div class=\"ds-deck\"><div class=\"ds-deck__ghost\"></div><article class=\"ds-card\"><header class=\"ds-card__head\"><span class=\"ds-card__tag\" style=\"--sdg:#FCC30B;--sdg-ink:#0F172A\">ODS 7: Energía Asequible y No Contaminante</span><span class=\"ds-card__index\">1 / 17</span></header><div class=\"ds-card__content\"><div class=\"ds-character\"><div class=\"ds-character__avatar\">⚡</div><div><h2 class=\"ds-character__name\">Ministra de Energía</h2><span class=\"ds-character__role\">Red Eléctrica Municipal</span></div></div><p class=\"ds-card__dilemma\">\"Alcalde, la ciudad necesita más electricidad urgente. ¿Expandimos el carbón, construimos una planta solar municipal o apoyamos cooperativas solares en techos vecinales?\"</p></div><footer class=\"ds-card__foot\"><span class=\"ds-card__hint\">Desliza la tarjeta o elige una vía</span><span class=\"ds-card__dirs\" aria-hidden=\"true\">← ↑ →</span></footer></article></div>",
+      "css": ".ds-deck{position:relative;font-family:var(--font-sans,\"Archivo\",system-ui,sans-serif);color:var(--text,#15171C)}.ds-deck__ghost{position:absolute;inset:0;transform:translateY(5px);background:var(--surface-2,#E9EAE5);border:1px solid var(--line,#D6D8D2);border-radius:var(--radius,2px)}.ds-card{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;min-height:300px;padding:16px;background:var(--surface,#FFFFFF);border:1px solid var(--line-strong,#B9BDB4);border-radius:var(--radius,2px)}.ds-card__head{display:flex;align-items:center;justify-content:space-between;gap:10px}.ds-card__tag{display:inline-flex;align-items:center;padding:5px 8px;border-radius:var(--radius,2px);background:var(--sdg,#FCC30B);color:var(--sdg-ink,#0F172A);font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1.3}.ds-card__index{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:12px;font-weight:600;color:var(--muted,#5B6159);font-variant-numeric:tabular-nums;white-space:nowrap}.ds-card__content{display:flex;flex:1;flex-direction:column;justify-content:center;gap:14px}.ds-character{display:flex;align-items:center;gap:10px}.ds-character__avatar{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;background:var(--surface-2,#E9EAE5);border:1px solid var(--line,#D6D8D2);border-radius:50%;font-size:25px;line-height:1}.ds-character__name{margin:0;font-size:15px;font-weight:700;line-height:1.25;letter-spacing:-.01em}.ds-character__role{display:block;margin-top:2px;font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--muted,#5B6159)}.ds-card__dilemma{margin:0;max-width:48ch;font-size:17px;font-weight:500;line-height:1.45;letter-spacing:-.01em}.ds-card__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line,#D6D8D2)}.ds-card__hint{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--muted-2,#6B7169)}.ds-card__dirs{font-size:10px;color:var(--muted-2,#6B7169);letter-spacing:.2em}"
+    },
+    {
+      "name": "Mandate Route (17 estaciones)",
+      "kind": "custom",
+      "description": "The signature 2026–2030 line: 1px rail, 3px signal progress, 17 station ticks.",
+      "html": "<div class=\"ds-mandate\"><div class=\"ds-mandate__head\"><span>2026</span><span class=\"ds-mandate__count\">Decisión 6 / 17</span><span>2030</span></div><div class=\"ds-route\"><div class=\"ds-route__progress\" style=\"width:35%\"></div><div class=\"ds-route__stations\"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>",
+      "css": ".ds-mandate{font-family:var(--font-narrow,\"Archivo Narrow\",system-ui,sans-serif);color:var(--muted,#5B6159)}.ds-mandate__head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#5B6159)}.ds-mandate__count{color:var(--text,#15171C);font-weight:700;white-space:nowrap}.ds-route{position:relative;height:20px;margin-top:7px}.ds-route::before{content:\"\";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line-strong,#B9BDB4)}.ds-route__progress{position:absolute;left:0;top:8px;height:3px;background:var(--signal-line,#D9471F);transition:width .45s var(--ease,cubic-bezier(.2,.7,.2,1))}.ds-route__stations{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between}.ds-route__stations span{width:5px;height:5px;border-radius:50%;background:var(--surface,#FFFFFF);border:1px solid var(--line-strong,#B9BDB4)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Señalética cívica",
+    "overview": "The interface is a municipal wayfinding system, not a dashboard. Every screen is a sign in a public building: ink on paper, a route line, a plate for each decision, and four gauges that never leave view. The mandate from 2026 to 2030 is drawn as 17 stations; each dilemma is the next stop, and the press ticker is the announcement read over the concourse.\n\nThe world is deliberately flat. Structure comes from 1px hairlines, 2px corners, and full ink-on-paper contrast. There are no gradients, no glass, no blur, and no soft shadows; a surface separates from its neighbor by a border or a step in paper tone. Color is data first: four pillar inks own the measurements, three path inks own the options, and a single signal orange is reserved for the next action and the distance already travelled.\n\nThe build is read in two conditions that set the scale: projected in a classroom and held on a phone. That is why the dilemma is the largest reading text, why every changing number is set in tabular Archivo Narrow, and why the three options stay full-width and visible instead of collapsing into a menu. The direction contract named one signal orange; the shipped build splits it into a fill-grade signal and a brighter signal-line for the mandate progress. The build wins, and both are recorded below.",
+    "keyCharacteristics": [
+      "Flat civic wayfinding: 1px hairlines, 2px plates, zero gradient, zero glass, zero soft shadow.",
+      "Ink (#15171C) on paper (#F2F2EE), with white surfaces for working documents.",
+      "One signal orange for action, focus, and mandate progress; never decoration.",
+      "Four pillar inks own the four measurements; three path inks own A / C / B.",
+      "Archivo reads; Archivo Narrow measures. Changing numbers are tabular.",
+      "The 17-station mandate line is the signature component.",
+      "44px icon targets, 46px buttons, 60px choices; all three options always visible."
+    ],
+    "rules": [
+      {
+        "name": "The One Signal Rule",
+        "body": "Signal orange appears only on the next action, the focus ring, the selected tool, and the mandate progress. It never washes a background, titles a section, or decorates a chart.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pillar Ownership Rule",
+        "body": "Each pillar ink owns exactly one meter, one percentage numeral, and one impact dot. Opción B's green is the single intentional overlap with Ambiente; otherwise a pillar color never appears on another pillar's data or in general chrome.",
+        "section": "colors"
+      },
+      {
+        "name": "The Data-Not-Decoration Rule",
+        "body": "Pillar and path colors are information. If removing the color would not remove a meaning, the color does not belong there.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Voice Rule",
+        "body": "Archivo sets everything that is read as a sentence. Archivo Narrow sets everything that is scanned as a sign: labels, dates, tags, keycaps, and data. Never set body copy in Narrow; never set a changing number without tabular figures.",
+        "section": "typography"
+      },
+      {
+        "name": "The Label-Tests-Value Rule",
+        "body": "Uppercase micro type must name a field, a state, or a control that sits next to it. It is never a decorative eyebrow above a heading that already says the same thing.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rail Rule",
+        "body": "From 980px the four pillars stop being a horizontal strip and become a vertical gauge rail. The order — Economía, Sociedad, Ambiente, Presupuesto — never changes, only the axis.",
+        "section": "layout"
+      },
+      {
+        "name": "The Three-Across Rule",
+        "body": "A / C / B stay stacked and full-width until 700px, then fan into three equal columns. They are never hidden behind a menu, a tab, or an instruction to swipe.",
+        "section": "layout"
+      },
+      {
+        "name": "The 1440 Rule",
+        "body": "Content stops growing at 1440px. Wider screens earn margin, not more columns.",
+        "section": "layout"
+      },
+      {
+        "name": "The Edge-In-Place-of-Shadow Rule",
+        "body": "If a surface needs to separate, give it a 1px border, a paper-tone step, or an offset plate. Never a shadow. A shadow is a missing border.",
+        "section": "elevation & depth"
+      },
+      {
+        "name": "The Flat-State Rule",
+        "body": "Hover may change border color or background tone; it may not lift, glow, or scale a surface. The only permitted hover or press displacement is the 1px press on buttons and choices; card motion belongs to the swipe gesture, not to hover.",
+        "section": "elevation & depth"
+      },
+      {
+        "name": "The Plate Rule",
+        "body": "Corners are 2px, or 1px on micro chips. Nothing is a pill, and nothing is rounder than 2px except a circle that marks a person, a station, or a single record.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Two-Weight Border Rule",
+        "body": "A 1px line divides; a 2px line answers state. If every border is 2px, nothing is emphasised.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do structure with 1px hairlines and 2px plates; let the border do the work a shadow would do elsewhere.",
+      "Do keep signal orange for the primary action, focus, the selected tool, and the mandate progress — nowhere else.",
+      "Do give each pillar its own color in exactly three places: meter, numeral, and impact dot.",
+      "Do set every changing number in Archivo Narrow with tabular figures.",
+      "Do keep A / C / B stacked until 700px, then three across; all three options stay visible at every width.",
+      "Do hold the 44px icon / 46px button / 60px choice target minimums.",
+      "Do use surface-2 to recess a block; use a paper-to-surface step to raise one.",
+      "Do let SDG names wrap; the tag grows in height rather than truncating the goal."
+    ],
+    "donts": [
+      "Don't add gradients, glass, blur, backdrop filters, or soft shadows to any surface.",
+      "Don't round anything above 2px except the character avatar, the route stations, and the single-record SDG dot.",
+      "Don't use signal orange as a background wash, a chart series, or a decorative bar.",
+      "Don't introduce a second accent for hover; signal-hover is the only darkening.",
+      "Don't move a pillar or path color outside its own data.",
+      "Don't put an uppercase eyebrow above a heading that already carries the meaning; micro labels only name fields, states, and controls.",
+      "Don't hide a decision behind a menu, a tab, or a gesture-only interaction.",
+      "Don't use a shadow, glow, or pulse to signal a critical pillar; use the 1px critical outline and the critical numeral.",
+      "Don't lower the opacity of a surface to fake depth; opacity belongs to spent powers and passed stations."
+    ]
+  }
+}

@@ -170,13 +170,9 @@ function renderDesktopSdgChips() {
     const container = document.getElementById('desktop-sdg-chips');
     if (!container) return;
     container.innerHTML = CARDS_DECK.map((card, idx) => {
-        const isPassed = idx < currentTurn;
-        const isCurrent = idx === currentTurn;
-        let bgStyle = isPassed 
-            ? `background-color: ${card.sdgColor}; opacity: 0.8;` 
-            : (isCurrent ? `background-color: ${card.sdgColor}; transform: scale(1.15); box-shadow: 0 0 8px ${card.sdgColor}; font-weight: 800; border: 2px solid white;` : 'background-color: #78716c; opacity: 0.35;');
+        const state = idx < currentTurn ? 'is-passed' : (idx === currentTurn ? 'is-current' : 'is-future');
         return `
-            <div title="${card.sdg}" class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] text-white font-bold transition-all" style="${bgStyle}">
+            <div title="${card.sdg}" class="sdg-chip ${state}" style="--sdg: ${card.sdgColor};">
                 ${idx + 1}
             </div>
         `;
@@ -189,10 +185,10 @@ function renderDesktopSdgChips() {
 function updateStatsUI() {
     const keys = ['economy', 'society', 'environment', 'budget'];
     const statusTexts = {
-        economy: { high: '• Floreciente', mid: '• Estable', low: '• En Riesgo' },
-        society: { high: '• Armoniosa', mid: '• Estable', low: '• Inquieta' },
-        environment: { high: '• Regenerado', mid: '• Estable', low: '• Crítico' },
-        budget: { high: '• Holgado', mid: '• Estable', low: '• Al Límite' }
+        economy: { high: 'Floreciente', mid: 'Estable', low: 'En riesgo' },
+        society: { high: 'Armoniosa', mid: 'Cohesionada', low: 'Inquieta' },
+        environment: { high: 'Regenerado', mid: 'Conservado', low: 'Crítico' },
+        budget: { high: 'Holgado', mid: 'Equilibrado', low: 'Al límite' }
     };
 
     keys.forEach(key => {
@@ -202,22 +198,28 @@ function updateStatsUI() {
         const box = document.getElementById(`stat-box-${key}`);
         const statusEl = document.getElementById(`status-${key}`);
 
-        bar.style.height = `${val}%`;
+        bar.style.width = `${val}%`;
         label.textContent = `${val}%`;
 
         if (statusEl) {
             const text = val <= 25 ? statusTexts[key].low : (val >= 65 ? statusTexts[key].high : statusTexts[key].mid);
             statusEl.textContent = text;
-            statusEl.className = val <= 25 ? 'text-[10px] font-bold text-rose-500 hidden lg:inline' : 'text-[10px] text-stone-400 hidden lg:inline';
+            statusEl.className = val <= 25 ? 'pillar__status is-low' : 'pillar__status';
         }
 
         // Alerta visual si un pilar está en riesgo crítico (<= 20%)
         if (val <= 20) {
-            box.classList.add('danger-pulse', 'border-rose-500');
-            label.classList.add('text-rose-500', 'font-black');
+            box.classList.add('is-critical');
+            label.classList.add('is-critical');
         } else {
-            box.classList.remove('danger-pulse', 'border-rose-500');
-            label.classList.remove('text-rose-500', 'font-black');
+            box.classList.remove('is-critical');
+            label.classList.remove('is-critical');
+        }
+
+        if (val <= 25) {
+            label.classList.add('is-low');
+        } else {
+            label.classList.remove('is-low');
         }
     });
 
@@ -225,9 +227,9 @@ function updateStatsUI() {
     powerPollCount.textContent = powers.pollCount;
     powerFundCount.textContent = powers.fundCount;
     powerPactCount.textContent = powers.pactCount;
-    powerPollBtn.classList.toggle('opacity-50', powers.pollCount <= 0);
-    powerFundBtn.classList.toggle('opacity-50', powers.fundCount <= 0);
-    powerPactBtn.classList.toggle('opacity-50', powers.pactCount <= 0);
+    powerPollBtn.classList.toggle('is-spent', powers.pollCount <= 0);
+    powerFundBtn.classList.toggle('is-spent', powers.fundCount <= 0);
+    powerPactBtn.classList.toggle('is-spent', powers.pactCount <= 0);
 
     // Fecha calculada de 2026 a 2030
     const year = 2026 + Math.floor(currentTurn / 4);
@@ -263,7 +265,7 @@ function previewImpact(direction) {
     keys.forEach(key => {
         const dot = document.getElementById(`dot-${key}`);
         dot.textContent = '';
-        dot.className = 'impact-dot w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shadow-md flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white';
+        dot.className = 'impact-dot';
 
         if (effects && effects[key] !== 0) {
             let diff = effects[key];
@@ -276,28 +278,25 @@ function previewImpact(direction) {
             if (advisorMode || isPollActiveForCurrentTurn) {
                 if (isPollActiveForCurrentTurn) {
                     dot.textContent = (diff > 0 ? `+${diff}` : `${diff}`);
-                    dot.style.fontSize = '6px';
-                    dot.style.width = '16px';
-                    dot.style.borderRadius = '6px';
+                    dot.classList.add('is-exact');
                 } else {
                     dot.textContent = isPositive ? '+' : '−';
                 }
 
                 if (isPositive) {
-                    dot.classList.add('bg-emerald-500', 'shadow-[0_0_8px_#10b981]');
+                    dot.classList.add('is-up');
                 } else if (diff === 0) {
-                    dot.classList.add('bg-sky-500', 'shadow-[0_0_8px_#0ea5e9]');
+                    dot.classList.add('is-flat');
                 } else {
-                    dot.classList.add('bg-rose-500', 'shadow-[0_0_8px_#f43f5e]');
+                    dot.classList.add('is-down');
                 }
             } else {
-                dot.classList.add('bg-amber-400', 'shadow-[0_0_8px_#fbbf24]');
+                dot.classList.add('is-neutral');
             }
 
+            dot.classList.add('is-on');
             if (Math.abs(diff) >= 20) {
-                dot.classList.add('active-large');
-            } else {
-                dot.classList.add('active-small');
+                dot.classList.add('is-large');
             }
         }
     });
@@ -311,7 +310,7 @@ function renderCurrentCard() {
     const badge = document.getElementById('sdg-badge');
     badge.style.backgroundColor = card.sdgColor;
     badge.style.color = card.textColor;
-    badge.innerHTML = `<i class="fa-solid ${card.icon}"></i><span class="truncate max-w-[200px] sm:max-w-xs">${card.sdg}</span>`;
+    badge.innerHTML = `<i class="fa-solid ${card.icon}" aria-hidden="true"></i><span class="sdg-tag__text">${card.sdg}</span>`;
 
     document.getElementById('card-index-indicator').textContent = `${currentTurn + 1} / ${totalTurns}`;
     document.getElementById('char-emoji').textContent = card.emoji;
@@ -326,7 +325,7 @@ function renderCurrentCard() {
 
     swipeBadgeLeft.textContent = card.left.text;
     swipeBadgeRight.textContent = card.right.text;
-    swipeBadgeUp.textContent = `✨ ${card.center.text}`;
+    swipeBadgeUp.textContent = card.center.text;
 
     // Resetear estado de poderes para el nuevo turno
     isPollActiveForCurrentTurn = false;
@@ -342,7 +341,7 @@ function renderCurrentCard() {
     }
 
     // Restablecer estilos de la tarjeta activa
-    activeCard.className = 'decision-card w-full min-h-[340px] sm:min-h-[370px] lg:min-h-[395px] bg-white dark:bg-stone-900 border-2 border-stone-200/90 dark:border-stone-700/80 rounded-[2.5rem] p-4 sm:p-5 flex flex-col justify-between shadow-xl shadow-stone-900/10 relative overflow-hidden cursor-grab transition-colors';
+    activeCard.className = 'decision-card';
     activeCard.style.transform = '';
     swipeBadgeLeft.style.opacity = '0';
     swipeBadgeRight.style.opacity = '0';
@@ -361,6 +360,7 @@ function logDecision(card, direction, choice) {
         date: `${month} ${year}`,
         sdg: card.sdg,
         sdgColor: card.sdgColor,
+        sdgTextColor: card.textColor,
         icon: card.icon,
         character: card.character,
         choiceTitle: choice.text,
@@ -380,69 +380,58 @@ function updateDesktopRecentList() {
 
     const recent = decisionHistory.slice(-3).reverse();
     if (recent.length === 0) {
-        recentList.innerHTML = `
-            <div class="py-3 text-center text-stone-400 text-xs">
-                <i class="fa-regular fa-folder-open text-xl mb-1 block"></i>
-                Esperando primer decreto...
-            </div>`;
+        recentList.innerHTML = `<p class="recent-empty">Esperando primer decreto…</p>`;
         return;
     }
 
     recentList.innerHTML = recent.map(entry => `
-        <div class="p-2 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/60 flex flex-col gap-0.5 transition-all">
-            <div class="flex items-center justify-between text-[10px]">
-                <span class="font-bold truncate max-w-[150px] text-stone-500">${entry.date} • ${entry.direction}</span>
-                <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${entry.sdgColor};" title="${entry.sdg}"></span>
+        <div class="recent-item" style="--sdg: ${entry.sdgColor};">
+            <div class="recent-item__head">
+                <span>${entry.date} · ${entry.direction}</span>
+                <span class="recent-item__sdg" title="${entry.sdg}"></span>
             </div>
-            <span class="font-bold text-stone-800 dark:text-stone-100 truncate">${entry.choiceTitle}</span>
-            <span class="text-[9px] italic text-stone-500 truncate">"${entry.reaction}"</span>
+            <span class="recent-item__title">${entry.choiceTitle}</span>
+            <span class="recent-item__quote">"${entry.reaction}"</span>
         </div>
     `).join('');
 }
 
+function formatEffect(label, value) {
+    const cls = value < 0 ? 'effect-down' : (value > 0 ? 'effect-up' : '');
+    const sign = value > 0 ? '+' : '';
+    return `<span class="${cls}">${label}: ${sign}${value}%</span>`;
+}
+
 // Actualizar Contenido del Modal de Bitácora
 function updateLogModalContent() {
-    logCount.textContent = `${decisionHistory.length} decisiones registradas`;
+    const count = decisionHistory.length;
+    logCount.textContent = `${count} ${count === 1 ? 'decisión registrada' : 'decisiones registradas'}`;
     if (decisionHistory.length === 0) {
-        logList.innerHTML = `
-            <div class="py-8 text-center text-stone-400">
-                <i class="fa-solid fa-scroll text-3xl mb-2"></i>
-                <p>Aún no se han firmado decretos en este mandato.</p>
-            </div>`;
+        logList.innerHTML = `<p class="recent-empty">Aún no se han firmado decretos en este mandato.</p>`;
         return;
     }
 
     logList.innerHTML = decisionHistory.map(entry => `
-        <div class="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 flex flex-col gap-1.5 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-xs" style="background-color: ${entry.sdgColor}">
-                    <i class="fa-solid ${entry.icon}"></i>
-                    <span class="truncate max-w-[200px]">${entry.sdg}</span>
+        <article class="log-entry">
+            <div class="log-entry__head">
+                <span class="log-tag" style="--tag-bg: ${entry.sdgColor}; --tag-text: ${entry.sdgTextColor || '#FFFFFF'};">
+                    <i class="fa-solid ${entry.icon}" aria-hidden="true"></i>
+                    <span>${entry.sdg}</span>
                 </span>
-                <span class="text-[10px] font-bold text-stone-400">${entry.date} (${entry.direction})</span>
+                <span class="log-entry__date">${entry.date} (${entry.direction})</span>
             </div>
-            <div class="font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
-                <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+            <div class="log-entry__choice">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
                 <span>${entry.choiceTitle}</span>
             </div>
-            <p class="text-[10px] italic text-stone-500 bg-stone-100 dark:bg-stone-900/60 p-1.5 rounded-lg">
-                📰 "${entry.reaction}"
-            </p>
-            <div class="flex flex-wrap gap-2 text-[10px] font-bold mt-0.5">
-                <span class="${entry.effects.economy >= 0 ? 'text-amber-700 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}">
-                    Econ: ${entry.effects.economy > 0 ? '+' : ''}${entry.effects.economy}%
-                </span>
-                <span class="${entry.effects.society >= 0 ? 'text-rose-700 dark:text-rose-400' : 'text-rose-600 dark:text-rose-400'}">
-                    Soc: ${entry.effects.society > 0 ? '+' : ''}${entry.effects.society}%
-                </span>
-                <span class="${entry.effects.environment >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
-                    Amb: ${entry.effects.environment > 0 ? '+' : ''}${entry.effects.environment}%
-                </span>
-                <span class="${entry.effects.budget >= 0 ? 'text-sky-700 dark:text-sky-400' : 'text-rose-600 dark:text-rose-400'}">
-                    Pres: ${entry.effects.budget > 0 ? '+' : ''}${entry.effects.budget}%
-                </span>
+            <p class="log-entry__quote">"${entry.reaction}"</p>
+            <div class="log-entry__effects">
+                ${formatEffect('Econ', entry.effects.economy)}
+                ${formatEffect('Soc', entry.effects.society)}
+                ${formatEffect('Amb', entry.effects.environment)}
+                ${formatEffect('Pres', entry.effects.budget)}
             </div>
-        </div>
+        </article>
     `).join('');
 }
 
@@ -553,7 +542,6 @@ function calculateMayorArchetype() {
 // Mostrar Modal de Fin de Juego (Victoria o Derrota)
 function showEndModal(isVictory, failureData, lastFact) {
     const emojiEl = document.getElementById('modal-emoji');
-    const badgeEl = document.getElementById('modal-badge');
     const titleEl = document.getElementById('modal-title');
     const descEl = document.getElementById('modal-desc');
     const factTitleEl = document.getElementById('modal-fact-title');
@@ -564,34 +552,30 @@ function showEndModal(isVictory, failureData, lastFact) {
         const archetype = calculateMayorArchetype();
 
         emojiEl.textContent = "🏆";
-        badgeEl.textContent = "¡Meta 2030 Cumplida!";
-        badgeEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 mb-2";
         titleEl.textContent = "¡Ciudad Sostenible 2030!";
         descEl.textContent = `¡Excelente gestión! Condujiste la ciudad con éxito hasta 2030 con un Índice de Sostenibilidad Global del ${avg}%. Tu perfil oficial es: "${archetype}".`;
         factTitleEl.textContent = "Balance General de Mandato";
         factTextEl.innerHTML = `
-            <div class="space-y-1">
-                <div>🌾 <strong>Economía:</strong> ${stats.economy}%</div>
-                <div>👥 <strong>Sociedad:</strong> ${stats.society}%</div>
-                <div>🌿 <strong>Ambiente:</strong> ${stats.environment}%</div>
-                <div>🪙 <strong>Presupuesto:</strong> ${stats.budget}%</div>
+            <div class="result-list">
+                <div class="result-row"><span>Economía</span><strong>${stats.economy}%</strong></div>
+                <div class="result-row"><span>Sociedad</span><strong>${stats.society}%</strong></div>
+                <div class="result-row"><span>Ambiente</span><strong>${stats.environment}%</strong></div>
+                <div class="result-row"><span>Presupuesto</span><strong>${stats.budget}%</strong></div>
             </div>`;
         modalActionBtn.textContent = "Comenzar Nuevo Mandato";
 
         modalShareBtn.classList.remove('hidden');
         modalShareBtn.onclick = () => {
-            const text = `🌱 ¡Logré conducir mi ciudad hasta 2030 en el Simulador ODS (3 Vías)!\n🏆 Índice de Sostenibilidad: ${avg}%\n🏛️ Título: ${archetype}\nEcon: ${stats.economy}% | Soc: ${stats.society}% | Amb: ${stats.environment}% | Pres: ${stats.budget}%\n#ODS2030 #Alcaldia2030`;
+            const text = `¡Logré conducir mi ciudad hasta 2030 en el Simulador ODS (3 Vías)!\nÍndice de Sostenibilidad: ${avg}%\nTítulo: ${archetype}\nEcon: ${stats.economy}% | Soc: ${stats.society}% | Amb: ${stats.environment}% | Pres: ${stats.budget}%\n#ODS2030 #Alcaldia2030`;
             navigator.clipboard.writeText(text).then(() => {
-                modalShareBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5 text-emerald-600"></i> ¡Copiado al portapapeles!';
+                modalShareBtn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> ¡Copiado al portapapeles!';
                 setTimeout(() => {
-                    modalShareBtn.innerHTML = '<i class="fa-regular fa-copy mr-1.5"></i> Copiar Resumen de Mandato';
+                    modalShareBtn.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i> Copiar Resumen de Mandato';
                 }, 2500);
             });
         };
     } else {
         emojiEl.textContent = failureData.emoji;
-        badgeEl.textContent = "Fin del Mandato";
-        badgeEl.className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700 mb-2";
         titleEl.textContent = failureData.title;
         descEl.textContent = failureData.desc;
         factTitleEl.textContent = "Lección ODS de la última decisión";
@@ -628,7 +612,7 @@ powerPollBtn.addEventListener('click', () => {
     playSound('power');
     triggerHaptic(40);
     updateStatsUI();
-    newsTickerText.textContent = '🗳️ Consulta Ciudadana activa: Se han revelado los porcentajes numéricos exactos de las 3 alternativas.';
+    newsTickerText.textContent = 'Consulta Ciudadana activa: se han revelado los porcentajes exactos de las tres alternativas.';
 });
 
 powerFundBtn.addEventListener('click', () => {
@@ -644,7 +628,7 @@ powerFundBtn.addEventListener('click', () => {
     playSound('power');
     triggerHaptic(50);
     updateStatsUI();
-    newsTickerText.textContent = `💰 Fondo Verde inyectó recursos de emergencia: +25% aplicado al pilar más crítico.`;
+    newsTickerText.textContent = `Fondo Verde: +25% aplicado al pilar más crítico.`;
 });
 
 powerPactBtn.addEventListener('click', () => {
@@ -654,7 +638,7 @@ powerPactBtn.addEventListener('click', () => {
     playSound('power');
     triggerHaptic(40);
     updateStatsUI();
-    newsTickerText.textContent = '🤝 Pacto Público-Privado firmado: Tu próxima decisión no tendrá costos presupuestarios.';
+    newsTickerText.textContent = 'Pacto público-privado firmado: la próxima decisión no tendrá costo presupuestario.';
 });
 
 // Eventos para Botones de Decisión (Izquierda, Centro, Derecha)
@@ -781,9 +765,7 @@ window.addEventListener('touchend', onDragEnd);
 // Toggle Modo Asesor
 advisorBtn.addEventListener('click', () => {
     advisorMode = !advisorMode;
-    advisorBtn.classList.toggle('bg-amber-100', advisorMode);
-    advisorBtn.classList.toggle('dark:bg-amber-950', advisorMode);
-    advisorBtn.classList.toggle('border-amber-400', advisorMode);
+    advisorBtn.classList.toggle('is-active', advisorMode);
     previewImpact(null);
     playSound('swipe');
 });
@@ -791,17 +773,17 @@ advisorBtn.addEventListener('click', () => {
 // Toggle Audio
 audioBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
-    audioIcon.className = soundEnabled 
-        ? 'fa-solid fa-volume-high text-xs sm:text-sm text-stone-600 dark:text-stone-300' 
-        : 'fa-solid fa-volume-xmark text-xs sm:text-sm text-stone-400';
+    audioIcon.className = soundEnabled
+        ? 'fa-solid fa-volume-high'
+        : 'fa-solid fa-volume-xmark';
     if (soundEnabled) playSound('decision');
 });
 
-// Toggle Tema (Luz Natural / Bosque Profundo)
+// Toggle Tema (Claro / Oscuro)
 themeBtn.addEventListener('click', () => {
     document.documentElement.classList.toggle('dark');
     const isDark = document.documentElement.classList.contains('dark');
-    themeIcon.className = isDark ? 'fa-solid fa-sun text-xs sm:text-sm text-amber-400' : 'fa-solid fa-moon text-xs sm:text-sm';
+    themeIcon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     playSound('swipe');
 });
 
@@ -817,8 +799,6 @@ closeLogBottomBtn.addEventListener('click', () => logModal.classList.add('hidden
 // Botón de Ayuda e Instrucciones
 helpBtn.addEventListener('click', () => {
     document.getElementById('modal-emoji').textContent = "🏛️";
-    document.getElementById('modal-badge').textContent = "Guía del Mandato Sostenible";
-    document.getElementById('modal-badge').className = "inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 mb-2";
     document.getElementById('modal-title').textContent = "¿Cómo gobernar con 3 Vías?";
     document.getElementById('modal-desc').textContent = "Desliza la tarjeta hacia la izquierda (Opción A), derecha (Opción B) o hacia ARRIBA (Tercera Vía / Opción C). También puedes usar los 3 botones inferiores o las teclas A, W, D.";
     document.getElementById('modal-fact-title').textContent = "Poderes y Equilibrio ODS";
